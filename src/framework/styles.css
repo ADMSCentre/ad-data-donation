@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  @apply prose !max-w-none;
+}
+#root {
+  @apply min-h-screen;
+}
+details summary * {
+  @apply cursor-pointer inline-block;
+}
+h2 {
+  @apply text-2xl font-bold;
+}
+details {
+  @apply bg-primarylight p-2 border border-primary rounded;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader {
+  /* border-left-color: #3498db; */
+  @apply border-l-primary animate-spin;
+}
