@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REACT_APP_BUILD: standalone
-      NODE_ENV: development
+      NODE_ENV: production
 
     steps:
       - uses: actions/checkout@v3

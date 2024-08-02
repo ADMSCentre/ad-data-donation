@@ -10,11 +10,6 @@ export const Main = ({ elements }: MainProps): JSX.Element => {
     return { ...element, key: `${index}` };
   });
 
-  // if (process.env.REACT_APP_BUILD !== "standalone" && process.env.NODE_ENV === "production") {
-  //   return <Embedded elements={elements} />;
-  // } else {
-  //   return <Standalone elements={elements} />;
-  // }
   return <Standalone elements={elements} />;
 };
 

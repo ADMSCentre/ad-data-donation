@@ -1,9 +1,12 @@
 let pyScript
+let env = {}
 
 onmessage = (event) => {
   const { eventType } = event.data
   switch (eventType) {
     case 'initialise':
+      const { NODE_ENV } = event.data.env
+      env = { NODE_ENV }
       initialise().then(() => {
         self.postMessage({ eventType: 'initialiseDone' })
       })
@@ -94,7 +97,8 @@ function startPyodide() {
 
   console.log('[ProcessingWorker] loading Pyodide')
   return loadPyodide({
-    indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.0/full/'
+    indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.0/full/',
+    env
   })
 }
 

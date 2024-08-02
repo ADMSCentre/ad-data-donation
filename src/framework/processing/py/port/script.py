@@ -6,24 +6,32 @@ import pandas as pd
 import json
 import zipfile
 import regex
+import os
 
 patterns = [
     '.*ad_preferences.json', 
     # ".*advertisers_you've_interacted_with.json", 
     ".*advertisers_using_your_activity_or_information.json"
 ]
-    
+
+def get_prompt_for_language(markdown_path: str, language: str) -> str:
+    node_env = os.environ.get("NODE_ENV", "development")    
+    try:
+        url = f"/prompts/{language}/{markdown_path}"
+        if node_env == "production":
+            url = "/ad-data-donation" + url
+        res = open_url(url)
+        value = res.getvalue()
+    except:
+        value = f"No translation found for {language}"
+    return value
+
 def get_translatable_prompt(markdown_path: str) -> props.Translatable:
     languages = props.Translations.__required_keys__
-    translatable = {}
-    for language in languages:
-        try:
-            res = open_url(f"/prompts/{language}/{markdown_path}")
-            value = res.getvalue()
-        except:
-            value = f"No translation found for {language}"
-        finally:
-            translatable[language] = value
+    translatable = {
+        language: get_prompt_for_language(markdown_path, language)
+        for language in languages
+    }
     return props.Translatable(translatable)
 
 def extract_the_data_you_are_interested_in(zip_file: str) -> pd.DataFrame:
@@ -144,7 +152,7 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
         }),
     ]
     
-    vis4 = dict(
+    wordcloud = dict(
         title = dict(en= "Ad Preferences"),
         type = "wordcloud",
         textColumn = 'Ad Preferences',
@@ -154,7 +162,7 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
     visualisations = [
         [],
         [
-            vis4
+            wordcloud
         ],
         []
     ] 
