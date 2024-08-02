@@ -5,8 +5,8 @@ onmessage = (event) => {
   const { eventType } = event.data
   switch (eventType) {
     case 'initialise':
-      const { NODE_ENV } = event.data.env
-      env = { NODE_ENV }
+      const { BASE_URL } = event.data.env
+      env = { BASE_URL }
       initialise().then(() => {
         self.postMessage({ eventType: 'initialiseDone' })
       })

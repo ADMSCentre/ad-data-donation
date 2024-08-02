@@ -15,11 +15,9 @@ patterns = [
 ]
 
 def get_prompt_for_language(markdown_path: str, language: str) -> str:
-    node_env = os.environ.get("NODE_ENV", "development")    
+    base_url = os.environ.get("BASE_URL", "")    
     try:
-        url = f"/prompts/{language}/{markdown_path}"
-        if node_env == "production":
-            url = "/ad-data-donation" + url
+        url = f"{base_url}/prompts/{language}/{markdown_path}"
         res = open_url(url)
         value = res.getvalue()
     except:

@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REACT_APP_BUILD: standalone
-      NODE_ENV: production
+      NODE_ENV: development
+      BASE_URL: ad-data-donation
 
     steps:
       - uses: actions/checkout@v3
