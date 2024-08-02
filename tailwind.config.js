@@ -8,34 +8,30 @@ module.exports = {
 
   darkMode: 'media',
   theme: {
-    boxShadow: {
-      top4px: 'inset 0 4px 0 0 rgba(0, 0, 0, 0.15)',
-      top2px: 'inset 0 2px 0 0 rgba(0, 0, 0, 0.15)',
-      '2xl': '0 5px 20px 0px rgba(0, 0, 0, 0.10)'
-    },
-    colors: {
-      primary: '#4272EF',
-      primarylight: '#E3EAFD',
-      secondary: '#FF5E5E',
-      tertiary: '#FFCF60',
-      success: '#6FCA37',
-      successlight: '#EBFFDF',
-      warning: '#F28D15',
-      warninglight: '#FFEFDC',
-      delete: '#DB1E1E',
-      deletelight: '#FFECEC',
-      error: '#DB1E1E',
-      errorlight: '#FFECEC',
-      black: '#000000',
-      grey1: '#222222',
-      grey2: '#999999',
-      grey3: '#CCCCCC',
-      grey4: '#EEEEEE',
-      grey5: '#F6F6F6',
-      grey6: '#FAFAFA',
-      white: '#FFFFFF'
-    },
+    // boxShadow: {
+    //   top4px: 'inset 0 4px 0 0 rgba(0, 0, 0, 0.15)',
+    //   top2px: 'inset 0 2px 0 0 rgba(0, 0, 0, 0.15)',
+    //   '2xl': '0 5px 20px 0px rgba(0, 0, 0, 0.10)'
+    // },
     extend: {
+      colors: {
+        primary: 'rgb(var(--color-primary) / <alpha-value>)',
+        primarylight: 'rgb(var(--color-primary-light) / <alpha-value>)',
+        secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+        secondarylight: 'rgb(var(--color-secondary-light) / <alpha-value>)',
+        tertiary: 'rgb(var(--color-tertiary) / <alpha-value>)',
+        tertiarylight: 'rgb(var(--color-tertiary-light) / <alpha-value>)',
+        behind: 'rgb(var(--color-behind) / <alpha-value>)',
+        text: 'rgb(var(--color-text) / <alpha-value>)',
+        success: 'rgb(var(--color-success) / <alpha-value>)',
+        successlight: 'rgb(var(--color-success-light) / <alpha-value>)',
+        warning: 'rgb(var(--color-warning) / <alpha-value>)',
+        warninglight: 'rgb(var(--color-warning-light) / <alpha-value>)',
+        delete: 'rgb(var(--color-delete) / <alpha-value>)',
+        deletelight: 'rgb(var(--color-delete-light) / <alpha-value>)',
+        error: 'rgb(var(--color-error) / <alpha-value>)',
+        errorlight: 'rgb(var(--color-error-light) / <alpha-value>)',
+      },
       opacity: {
         shadow: '.15'
       },
@@ -113,32 +109,6 @@ module.exports = {
         bodybold: ['Montserrat-Medium', 'sans-serif'],
         'table-header': ['Montserrat-SemiBold', 'sans-serif'],
         'table-row': ['Montserrat-Regular', 'sans-serif']
-      },
-      fontSize: {
-        // title0: ['64px', '68px'],
-        // title1: ['50px', '50px'],
-        // title2: ['40px', '44px'],
-        // title3: ['32px', '38px'],
-        // title4: ['28px', '32px'],
-        // title5: ['24px', '26px'],
-        // title6: ['20px', '22px'],
-        // title7: ['16px', '20px'],
-        // caption: ['14px', '18px'],
-        // captionsmall: ['12px', '14px'],
-        // subhead: ['20px', '20px'],
-        // label: ['16px', '16px'],
-        // labelsmall: ['14px', '14px'],
-        // button: ['18px', '18px'],
-        // buttonsmall: ['16px', '16px'],
-        // intro: ['20px', '30px'],
-        // introdesktop: ['24px', '36px'],
-        // bodylarge: ['24px', '36px'],
-        // bodymedium: ['20px', '30px'],
-        // bodysmall: ['16px', '24px'],
-        // bodylinklarge: ['24px', '36px'],
-        // bodylinkmedium: ['30px', '30px'],
-        // link: ['16px', '24px'],
-        // table: ['14px', '14px']
       },
       minWidth: {
         '1/2': '50%',

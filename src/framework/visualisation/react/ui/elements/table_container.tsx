@@ -75,7 +75,7 @@ export const TableContainer = ({ id, table, updateTable, locale }: TableContaine
   return (
     <div
       key={table.id}
-      className="p-3 md:p-4 lg:p-6 flex flex-col gap-4 w-full overflow-hidden border-[0.2rem] border-grey4 rounded-lg not-prose"
+      className="p-3 md:p-4 lg:p-6 flex flex-col gap-4 w-full overflow-hidden border-gray-200 dark:border-gray-700 dark:border-gray-700 border-l-4 not-prose"
     >
       <div className="flex flex-wrap ">
         <div key="Title" className="flex sm:flex-row justify-between w-full gap-1 mb-2">

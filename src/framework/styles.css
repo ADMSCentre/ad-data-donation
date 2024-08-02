@@ -3,10 +3,51 @@
 @tailwind utilities;
 
 :root {
-  @apply prose !max-w-none;
+  --color-primary: 255 214 0;
+  --color-primary-light: 255 255 225;
+  --color-secondary: 220 180 255;
+  --color-secondary-light: 255 235 255;
+  --color-tertiary: 144 231 255;
+  --color-tertiary-light: 235 255 255;
+  --color-behind: 255 255 255;
+  --color-text: 0 0 0;
+  --color-success: 111 202 55;
+  --color-success-light: 235 255 223;
+  --color-warning: 242 141 21;
+  --color-warning-light: 255 239 220;
+  --color-delete: 219 30 30;
+  --color-delete-light: 255 236 236;
+  --color-error: 219 30 30;
+  --color-error-light: 255 236 236;
+  @apply prose dark:prose-invert !max-w-none;
 }
+
+/* When prefers-color-scheme is dark */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: 194 157 0; /* Darker yellow */
+    --color-primary-light: 94 75 0; /* Darker yellow */
+    --color-secondary: 171 95 235; /* Slightly muted blue */
+    --color-secondary-light: 61 0 105; /* Slightly muted blue */
+    --color-tertiary: 76 168 235; /* Slightly muted purple */
+    --color-tertiary-light: 76 168 235; /* Slightly muted purple */
+    --color-behind: 34 34 34; /* Dark grey for background */
+    --color-text: 235 235 235; /* Slightly off-white for readability */
+    --color-success: 92 167 27; /* Slightly muted green */
+    --color-success-light: 83 118 55; /* Darker green */
+    --color-warning: 202 101 1; /* Slightly muted orange */
+    --color-warning-light: 72 37 1; /* Darker orange */
+    --color-delete: 199 10 10; /* Slightly muted red */
+    --color-delete-light: 129 43 43; /* Darker red */
+    --color-error: 199 10 10; /* Slightly muted red */
+    --color-error-light: 129 43 43; /* Darker red */
+    @apply dark:bg-behind dark:text-text;
+  }
+}
+
 #root {
-  @apply min-h-screen;
+  @apply min-h-screen bg-behind text-text;
 }
 details summary * {
   @apply cursor-pointer inline-block;
@@ -14,8 +55,8 @@ details summary * {
 h2 {
   @apply text-2xl font-bold;
 }
-details {
-  @apply bg-primarylight p-2 border border-primary rounded;
+details.secondary {
+  @apply bg-secondary p-2 pl-4 bg-opacity-20 border-l-4 border-secondary rounded;
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }

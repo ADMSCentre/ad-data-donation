@@ -5,7 +5,7 @@ import BackSvg from '../../../../../assets/images/back.svg'
 import ForwardSvg from '../../../../../assets/images/forward.svg'
 import { Spinner } from './spinner'
 
-function spinnerColor (buttonColor: string): string {
+function spinnerColor(buttonColor: string): string {
   if (buttonColor.includes('bg-tertiary')) {
     return 'dark'
   }
@@ -32,7 +32,7 @@ export const PrimaryButton = ({ label, spinning = false, enabled = true, color =
 export const SecondaryButton = ({ label, color = 'bg-delete text-delete', onClick }: Weak<PropsUIButtonSecundary>): JSX.Element => {
   return (
     <div className='relative min-w-button'>
-      <div className={`flex flex-col items-center active:shadow-top2px border-2 font-button text-button rounded bg-opacity-0 cursor-pointer ${color}`} onClick={onClick}>
+      <div className={`flex flex-col items-center active:shadow-top2px border-gray-200  dark:border-gray-700 font-button text-button rounded bg-opacity-0 cursor-pointer ${color}`} onClick={onClick}>
         <div className='pt-13px pb-13px pr-4 pl-4 active:pt-14px active:pb-3'>
           {label}
         </div>

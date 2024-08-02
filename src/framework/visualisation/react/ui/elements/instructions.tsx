@@ -25,11 +25,11 @@ export const Instructions = (props: Props): JSX.Element => {
   const { locale } = props
   const platform = props.platform.toLowerCase()
 
-  function renderBullets (bullets: string[]): JSX.Element[] {
+  function renderBullets(bullets: string[]): JSX.Element[] {
     return bullets.map((bullet) => renderBullet(bullet))
   }
 
-  function renderContent (): JSX.Element {
+  function renderContent(): JSX.Element {
     return (
       <>
         <div className='flex flex-col gap-4 text-bodymedium font-body text-grey2'>
@@ -41,7 +41,7 @@ export const Instructions = (props: Props): JSX.Element => {
   }
 
   return (
-    <div className='flex flex-col gap-6 p-8 border-2 border-grey4 rounded'>
+    <div className='flex flex-col gap-6 p-8 border-gray-200  dark:border-gray-700  rounded'>
       <div className='flex flex-row gap-8 items-center'>
         <div className='flex-grow'>
           <Title3 text={title} margin='' />
@@ -59,7 +59,7 @@ interface Copy {
   title: string
 }
 
-function prepareCopy ({ platform, locale }: Props): Copy {
+function prepareCopy({ platform, locale }: Props): Copy {
   return {
     title: Translator.translate(title, locale)
   }
@@ -69,7 +69,7 @@ const title = new TextBundle()
   .add('en', 'Download')
   .add('nl', 'Download')
 
-function renderBullet (text: string): JSX.Element {
+function renderBullet(text: string): JSX.Element {
   return (
     <Bullet frameSize='w-5 h-30px'>
       <div>{text}</div>
@@ -144,11 +144,11 @@ const bullets: Record<string, Record<string, string[]>> = {
   }
 }
 
-function linkEn (link: string): JSX.Element {
+function linkEn(link: string): JSX.Element {
   return <div>Click <span className='text-primary underline'><a href={link} target='_blank' rel='noreferrer'>here</a></span> for more extensive instructions</div>
 }
 
-function linkNl (link: string): JSX.Element {
+function linkNl(link: string): JSX.Element {
   return <div>Klik <span className='text-primary underline'><a href={link} target='_blank' rel='noreferrer'>hier</a></span> voor uitgebreidere instructies</div>
 }
 

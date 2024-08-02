@@ -62,7 +62,7 @@ export const Table = ({
 
   useEffect(() => {
     // rm tooltip on scroll
-    function rmTooltip (): void {
+    function rmTooltip(): void {
       setTooltip((tooltip: Tooltip) => (tooltip.show ? { ...tooltip, show: false } : tooltip))
     }
     window.addEventListener('scroll', rmTooltip)
@@ -77,7 +77,7 @@ export const Table = ({
       return
     }
 
-    function responsiveHeight (): void {
+    function responsiveHeight(): void {
       if (ref.current == null || innerRef.current == null) return
       ref.current.style.gridTemplateRows = `${innerRef.current.scrollHeight}px`
     }
@@ -96,7 +96,7 @@ export const Table = ({
     return items
   }, [table, page, pageSize])
 
-  function renderHeaderCell (value: string, i: number): JSX.Element {
+  function renderHeaderCell(value: string, i: number): JSX.Element {
     return (
       <th key={`header ${i}`}>
         <div className={`text-left ${cellClass}`}>
@@ -106,11 +106,11 @@ export const Table = ({
     )
   }
 
-  function renderRow (item: PropsUITableRow | null, i: number): JSX.Element | null {
+  function renderRow(item: PropsUITableRow | null, i: number): JSX.Element | null {
     if (item == null && i >= unfilteredRows) return null
     if (item == null) {
       return (
-        <tr key={`{empty ${i}`} className='border-b-2 border-grey4'>
+        <tr key={`{empty ${i}`} className='border-b border-gray-200 dark:border-gray-700'>
           <td>
             <div className={cellClass} />
           </td>
@@ -118,7 +118,7 @@ export const Table = ({
       )
     }
     return (
-      <tr key={item.id} className='border-b-2 border-grey4 border-solid'>
+      <tr key={item.id} className='border-b border-gray-200 dark:border-gray-700 border-solid'>
         <td key='select'>
           <CheckBox
             id={item.id}
@@ -137,7 +137,7 @@ export const Table = ({
     )
   }
 
-  function toggleSelected (id: string): void {
+  function toggleSelected(id: string): void {
     if (selected.has(id)) {
       selected.delete(id)
     } else {
@@ -146,7 +146,7 @@ export const Table = ({
     setSelected(new Set(selected))
   }
 
-  function toggleSelectAll (): void {
+  function toggleSelectAll(): void {
     if (selected.size === table.body.rows.length) {
       setSelected(new Set())
     } else {
@@ -160,11 +160,11 @@ export const Table = ({
       className='grid grid-cols-1 transition-[grid,color] duration-500 relative overflow-hidden text-sm md:text-base'
     >
       <div ref={innerRef} className={`h-min ${unfilteredRows === 0 ? 'invisible' : ''}`}>
-        <div className='my-2 bg-grey6 rounded-md border-grey4 border-[0.2rem]'>
+        <div className='my-2 bg-grey6 rounded-md border-gray-200 dark:border-gray-700 border-2'>
           <div className='p-3 pt-1 pb-2 max-w-full overflow-x-auto'>
             <table className='table-fixed min-w-full '>
               <thead className=''>
-                <tr className='border-b-2 border-grey4 border-solid'>
+                <tr className='border-b border-gray-200 dark:border-gray-700 border-solid'>
                   <td className='w-8'>
                     <CheckBox
                       id='selectAll'
@@ -190,18 +190,17 @@ export const Table = ({
                     disabled={selected.size === 0}
                     onClick={() => handleDelete?.(Array.from(selected))}
                   />
-                  )
+                )
                 : (
                   <IconButton icon={UndoSvg} label={text.undo} color='text-primary' onClick={() => handleUndo?.()} />
-                  )}
+                )}
             </div>
             <Pagination page={page} setPage={setPage} nPages={nPages} />
           </div>
         </div>
         <div
-          className={`${
-            tooltip.show ? '' : 'invisible'
-          } break-all fixed bg-[#222a] -translate-x-2 -translate-y-2 p-2  rounded text-white backdrop-blur-[2px] z-20 max-w-[20rem] pointer-events-none overflow-auto font-table-row`}
+          className={`${tooltip.show ? '' : 'invisible'
+            } break-all fixed bg-[#222a] -translate-x-2 -translate-y-2 p-2  rounded text-white backdrop-blur-[2px] z-20 max-w-[20rem] pointer-events-none overflow-auto font-table-row`}
           style={{ left: tooltip.x, top: tooltip.y } as any}
         >
           {tooltip.content}
@@ -211,7 +210,7 @@ export const Table = ({
   )
 }
 
-function Cell ({
+function Cell({
   cell,
   search,
   cellClass,
@@ -236,7 +235,7 @@ function Cell ({
     setOverflows(textRef.current.scrollWidth > textRef.current.clientWidth)
   }, [textRef])
 
-  function onSetTooltip (): void {
+  function onSetTooltip(): void {
     if (isUrl) return
     if (textRef.current == null) return
     if (!overflows) return
@@ -260,7 +259,7 @@ function Cell ({
     })
   }
 
-  function onRmTooltip (): void {
+  function onRmTooltip(): void {
     setTooltip((tooltip: Tooltip) => (tooltip.show ? { ...tooltip, show: false } : tooltip))
   }
 
@@ -282,7 +281,7 @@ function Cell ({
                 highlightClassName='bg-tertiary rounded-sm'
               />
             </a>
-            )
+          )
           : (
             <Highlighter
               searchWords={searchWords}
@@ -290,14 +289,14 @@ function Cell ({
               textToHighlight={cell}
               highlightClassName='bg-tertiary rounded-sm'
             />
-            )}
+          )}
       </div>
       {overflows && !isUrl && <TooltipIcon />}
     </div>
   )
 }
 
-function TooltipIcon (): JSX.Element {
+function TooltipIcon(): JSX.Element {
   return (
     <svg
       className='w-3 h-3 mb-1 text-gray-800 dark:text-white'
@@ -317,7 +316,7 @@ function TooltipIcon (): JSX.Element {
   )
 }
 
-function IconButton (props: {
+function IconButton(props: {
   icon: string
   label: string
   onClick: () => void
@@ -329,9 +328,8 @@ function IconButton (props: {
   const disabled = props.disabled ?? false
   return (
     <div
-      className={`flex items-center gap-2 cursor-pointer  ${props.color} animate-fadeIn md:text-button ${
-        disabled ? 'opacity-50' : ''
-      }`}
+      className={`flex items-center gap-2 cursor-pointer  ${props.color} animate-fadeIn md:text-button ${disabled ? 'opacity-50' : ''
+        }`}
       onClick={() => !disabled && props.onClick()}
     >
       <img src={props.icon} className='w-7 h-7 ml-1 md:w-9 md:h-9 md:ml-0 -translate-x-[3px]' />
@@ -340,7 +338,7 @@ function IconButton (props: {
   )
 }
 
-function getTranslations (locale: string): Record<string, string> {
+function getTranslations(locale: string): Record<string, string> {
   const translated: Record<string, string> = {}
   for (const [key, value] of Object.entries(translations)) {
     translated[key] = Translator.translate(value, locale)

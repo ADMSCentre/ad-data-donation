@@ -7,7 +7,7 @@ interface FooterProps {
 export const Footer = ({ left, middle, right }: FooterProps): JSX.Element => {
   return (
     <>
-      <div className='bg-grey4 h-px' />
+      <div className='h-px' />
       <div className='h-full flex flex-col justify-center'>
         <div className='flex flex-row gap-4 px-14'>
           <div className='w-1/3'>
