@@ -15,7 +15,7 @@ patterns = [
 ]
 
 def get_prompt_for_language(markdown_path: str, language: str) -> str:
-    base_url = os.environ.get("BASE_URL", "")    
+    base_url = os.environ.get("PUBLIC_URL", "")    
     try:
         url = f"{base_url}/prompts/{language}/{markdown_path}"
         res = open_url(url)

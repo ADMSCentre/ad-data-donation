@@ -5,8 +5,8 @@ onmessage = (event) => {
   const { eventType } = event.data
   switch (eventType) {
     case 'initialise':
-      const { BASE_URL } = event.data.env
-      env = { BASE_URL }
+      const { BASE_URL, PUBLIC_URL } = event.data.env
+      env = { BASE_URL, PUBLIC_URL }
       initialise().then(() => {
         self.postMessage({ eventType: 'initialiseDone' })
       })
@@ -96,6 +96,7 @@ function startPyodide() {
   importScripts('https://cdn.jsdelivr.net/pyodide/v0.24.0/full/pyodide.js')
 
   console.log('[ProcessingWorker] loading Pyodide')
+  console.log('[ProcessingWorker] env: ' + JSON.stringify(env))
   return loadPyodide({
     indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.0/full/',
     env

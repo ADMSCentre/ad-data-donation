@@ -69,6 +69,9 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
   async waitForInitialization (): Promise<void> {
     return await new Promise<void>((resolve) => {
       this.resolveInitialized = resolve
+      console.log('[WorkerProcessingEngine] sending initialise with env: ',
+        process.env
+      )
       this.worker.postMessage({ eventType: 'initialise', env: process.env })
     })
   }
