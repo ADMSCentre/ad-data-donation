@@ -1,6 +1,6 @@
 Please submit Facebook Ad Information package as a `.zip` file below. If this is your first time submitting a Facebook Ad Information package, please refer to the **Download Instructions** below (click to expand).
 
-<details>
+<details class='secondary'>
 <summary><strong>Download Instructions</strong></summary>
 
 **Step 1**: Navigate to [Facebook Accounts Centre](https://accountscenter.facebook.com/info_and_permissions/dyi/)
