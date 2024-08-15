@@ -14,6 +14,8 @@ export interface VisualisationEngine {
 
 export interface Bridge {
   send: (command: CommandSystem) => void
+  worker: Worker | undefined
+  connectWorker: (worker: Worker) => void
 }
 
 export interface CommandHandler {

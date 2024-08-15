@@ -25,6 +25,19 @@ class CommandSystemDonate:
         dict["json_string"] = self.json_string
         return dict
 
+class CommandSystemDonateFiles:
+    __slots__ = "key", "file_contents"
+
+    def __init__(self, key, fileContents):
+        self.key = key
+        self.file_contents = fileContents
+
+    def toDict(self):
+        dict = {}
+        dict["__type__"] = "CommandSystemDonateFiles"
+        dict["key"] = self.key
+        dict["fileContents"] = self.file_contents
+        return dict
 
 class CommandSystemExit:
     __slots__ = "code", "info"

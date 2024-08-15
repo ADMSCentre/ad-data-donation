@@ -5,8 +5,7 @@ onmessage = (event) => {
   const { eventType } = event.data
   switch (eventType) {
     case 'initialise':
-      const { BASE_URL, PUBLIC_URL } = event.data.env
-      env = { BASE_URL, PUBLIC_URL }
+      env = event.data.env
       initialise().then(() => {
         self.postMessage({ eventType: 'initialiseDone' })
       })
@@ -21,6 +20,16 @@ onmessage = (event) => {
       const { response } = event.data
       unwrap(response).then((userInput) => {
         runCycle(userInput)
+      })
+      break
+
+    case 'readFile':
+      readFileFromPyFS(event.data.filename, (file) => {
+        self.postMessage({
+          eventType: 'readFileFromPyFSDone',
+          filename: event.data.filename,
+          file: file
+        })
       })
       break
 
@@ -80,6 +89,20 @@ function copyFileToPyFS(file, resolve) {
   resolve({ __type__: 'PayloadString', value: directoryName + '/' + file.name })
 }
 
+function readFileFromPyFS(filename, resolve) {
+  // console.log('[ProcessingWorker] readFileFromPyFS: ' + filename)
+  // const path = `/file-output/${filename}`
+  // const file = self.pyodide.FS.readFile(path, { encoding: 'utf8' })
+  // console.log('[ProcessingWorker] readFileFromPyFS: ' + file)
+  // resolve(file)
+  
+
+  // Explore the file system
+  const path = `/file-output`
+  const files = self.pyodide.FS.readdir(path)
+  console.log('[ProcessingWorker] readFileFromPyFS: ' + files)
+}
+
 function initialise() {
   console.log('[ProcessingWorker] initialise')
   return startPyodide()
@@ -89,6 +112,11 @@ function initialise() {
     })
     .then(() => {
       return installPortPackage()
+    })
+    .then(() => {
+      console.log('[ProcessingWorker] creating file system')
+      self.pyodide.FS.mkdir('/file-output')
+      self.pyodide.FS.mount(self.pyodide.FS.filesystems.WORKERFS, {}, '/file-output')
     })
 }
 

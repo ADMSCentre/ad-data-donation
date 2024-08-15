@@ -7,6 +7,10 @@ export default class LiveBridge implements Bridge {
   constructor (port: MessagePort) {
     this.port = port
   }
+  worker: Worker | undefined
+  connectWorker (worker: Worker): void {
+    this.worker = worker
+  }
 
   static create (window: Window, callback: (bridge: Bridge, locale: string) => void): void {
     window.addEventListener('message', (event) => {

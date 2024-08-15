@@ -2,6 +2,11 @@ import { CommandSystem, CommandSystemDonate, CommandSystemExit, isCommandSystemD
 import { Bridge } from './framework/types/modules'
 
 export default class FakeBridge implements Bridge {
+  worker: Worker | undefined
+  connectWorker (worker: Worker): void {
+    this.worker = worker
+  }
+  
   send (command: CommandSystem): void {
     if (isCommandSystemDonate(command)) {
       this.handleDonation(command)

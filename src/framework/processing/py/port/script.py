@@ -1,5 +1,5 @@
 import port.api.props as props
-from port.api.commands import (CommandSystemDonate, CommandUIRender, CommandSystemExit)
+from port.api.commands import (CommandSystemDonate, CommandUIRender, CommandSystemExit, CommandSystemDonateFiles)
 from pyodide.http import open_url
 
 import pandas as pd
@@ -183,6 +183,8 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
 def donate(key, json_string):
     return CommandSystemDonate(key, json_string)
 
+def donate_files(key, file_contents):
+    return CommandSystemDonateFiles(key, file_contents)
 
 def exit_port(code, info):
     return CommandSystemExit(code, info)
@@ -277,6 +279,38 @@ def extract_advertisers(zip_file: str) -> pd.DataFrame:
 
     return out
 
+def save_files(zip_file: str, filenames: list[str]):
+    outpath = "file-output"
+    try:
+        # Create the output folder if it does not exist
+        if not os.path.exists(outpath):
+            os.makedirs(outpath)
+        with zipfile.ZipFile(zip_file) as zf:
+            for name in filenames:
+                with zf.open(name) as file:
+                    # If the name has a path, create the path
+                    if "/" in name:
+                        path = os.path.join(outpath, os.path.dirname(name))
+                        os.makedirs(path, exist_ok=True)
+                    with open(f"{outpath}/{name}", "wb") as out:
+                        out.write(file.read())
+                        print(f"Saved {name} to {outpath}")
+    except zipfile.BadZipFile:
+        return False
+
+def files_to_blobs(zip_file: str, filenames: list[str]):
+    out = {}
+    try:
+        with zipfile.ZipFile(zip_file) as zf:
+            for name in filenames:
+                with zf.open(name) as file:
+                    filename = os.path.basename(name)
+                    content = file.read()
+                    out[filename] = content
+    except zipfile.BadZipFile:
+        return False
+    return out
+
 def process(session_id: str):
     platform = "Meta Ad Information Data Donation"
 
@@ -290,8 +324,9 @@ def process(session_id: str):
         if file_prompt_result.__type__ == 'PayloadString':
 
             # Validate the file the participant submitted
-            # In general this is wise to do 
-            is_data_valid = validate_the_participants_input(file_prompt_result.value)
+            # In general this is wise to do
+            zip_file = file_prompt_result.value
+            is_data_valid = validate_the_participants_input(zip_file)
 
             # Happy flow:
             # The file the participant submitted is valid
@@ -300,15 +335,20 @@ def process(session_id: str):
                 # Extract the data you as a researcher are interested in, and put it in a pandas DataFrame
                 # Show this data to the participant in a table on screen
                 # The participant can now decide to donate
-                extracted_data = extract_the_data_you_are_interested_in(file_prompt_result.value)
-                extracted_data_statistics = tabulate_ad_preferences(file_prompt_result.value)
-                extracted_advertisers = extract_advertisers(file_prompt_result.value)
-                consent_prompt = generate_consent_prompt(extracted_data, extracted_data_statistics, extracted_advertisers)
+                files = extract_the_data_you_are_interested_in(zip_file)
+                extracted_data_statistics = tabulate_ad_preferences(zip_file)
+                extracted_advertisers = extract_advertisers(zip_file)
+                # consent_prompt = generate_consent_prompt(extracted_data_statistics, extracted_advertisers)
+                consent_prompt = generate_consent_prompt(files)
                 consent_prompt_result = yield render_page(platform, consent_prompt)
 
                 # If the participant wants to donate the data gets donated
                 if consent_prompt_result.__type__ == "PayloadJSON":
-                    yield donate(f"{session_id}-{platform}", consent_prompt_result.value)
+                    filenames = [file for file in files['File name']]
+                    # Extract the zip and save the files into an "file-output" folder
+                    blobs = files_to_blobs(zip_file, filenames)
+                    yield donate_files(f"{session_id}-{platform}", blobs)
+                    # yield donate(f"{session_id}-{platform}", consent_prompt_result.value)
 
                 break
 

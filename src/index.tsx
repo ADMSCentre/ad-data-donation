@@ -14,6 +14,7 @@ const worker = new Worker(workerFile)
 let assembly: Assembly
 
 const run = (bridge: Bridge, locale: string): void => {
+  bridge.connectWorker(worker)
   assembly = new Assembly(worker, bridge)
   assembly.visualisationEngine.start(rootElement, locale)
   assembly.processingEngine.start()

@@ -84,10 +84,11 @@ export function isCommand (arg: any): arg is Command {
 export type CommandSystem =
   CommandSystemDonate |
   CommandSystemEvent |
-  CommandSystemExit
+  CommandSystemExit |
+  CommandSystemDonateFiles
 
 export function isCommandSystem (arg: any): arg is CommandSystem {
-  return isCommandSystemDonate(arg) || isCommandSystemEvent(arg) || isCommandSystemExit(arg)
+  return isCommandSystemDonate(arg) || isCommandSystemEvent(arg) || isCommandSystemExit(arg) || isCommandSystemDonateFiles(arg)
 }
 
 export interface CommandSystemEvent {
@@ -121,6 +122,15 @@ export interface CommandSystemDonate {
 }
 export function isCommandSystemDonate (arg: any): arg is CommandSystemDonate {
   return isInstanceOf<CommandSystemDonate>(arg, 'CommandSystemDonate', ['key', 'json_string'])
+}
+
+export interface CommandSystemDonateFiles {
+  __type__: 'CommandSystemDonateFiles'
+  key: string
+  fileContents: any
+}
+export function isCommandSystemDonateFiles (arg: any): arg is CommandSystemDonateFiles {
+  return isInstanceOf<CommandSystemDonateFiles>(arg, 'CommandSystemDonateFiles', ['key', 'fileContents'])
 }
 
 export interface CommandUIRender {

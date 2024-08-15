@@ -1,5 +1,6 @@
 import { CommandHandler, ProcessingEngine } from '../types/modules'
 import { CommandSystemEvent, isCommand, Response } from '../types/commands'
+import config from "../../aws.config.js"
 
 export default class WorkerProcessingEngine implements ProcessingEngine {
   sessionId: String
@@ -44,6 +45,11 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
         console.log('[ReactEngine] received: event', event.data.scriptEvent)
         this.handleRunCycle(event.data.scriptEvent)
         break
+
+      case 'readFileDone':
+        console.log('[ReactEngine] received: readFileDone', event.data)
+        break
+
       default:
         console.log(
           '[ReactEngine] received unsupported flow event: ',
@@ -69,10 +75,14 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
   async waitForInitialization (): Promise<void> {
     return await new Promise<void>((resolve) => {
       this.resolveInitialized = resolve
+      const env = {
+        ...process.env,
+        ...config
+      }
       console.log('[WorkerProcessingEngine] sending initialise with env: ',
-        process.env
+        env
       )
-      this.worker.postMessage({ eventType: 'initialise', env: process.env })
+      this.worker.postMessage({ eventType: 'initialise', env })
     })
   }
 
