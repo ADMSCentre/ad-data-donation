@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/ad-data-donation/static/css/main.88098551.css",
-    "main.js": "/ad-data-donation/static/js/main.92e2a841.js",
+    "main.js": "/ad-data-donation/static/js/main.044f6942.js",
     "static/js/120.a7d39374.chunk.js": "/ad-data-donation/static/js/120.a7d39374.chunk.js",
     "static/media/Montserrat-ExtraBold.ttf": "/ad-data-donation/static/media/Montserrat-ExtraBold.6c8b198832c88c649faa.ttf",
     "static/media/Montserrat-Black.ttf": "/ad-data-donation/static/media/Montserrat-Black.beacc26b4bbaaf608567.ttf",
@@ -12,7 +12,7 @@
     "static/media/Montserrat-Regular.ttf": "/ad-data-donation/static/media/Montserrat-Regular.24785cc015b27a3e964b.ttf",
     "static/media/Montserrat-ExtraLight.ttf": "/ad-data-donation/static/media/Montserrat-ExtraLight.d928d1131a9af02cb672.ttf",
     "static/media/Montserrat-Thin.ttf": "/ad-data-donation/static/media/Montserrat-Thin.9a7aece9cfe235bc0920.ttf",
-    "static/media/py_worker.js": "/ad-data-donation/static/media/py_worker.3e0ec2354653d1b0a709.js",
+    "static/media/py_worker.js": "/ad-data-donation/static/media/py_worker.bcd7d65514fe52e4e53b.js",
     "index.html": "/ad-data-donation/index.html",
     "static/media/delete.svg": "/ad-data-donation/static/media/delete.52e6851b1a65c25db5a603cd9988d336.svg",
     "static/media/check_active.svg": "/ad-data-donation/static/media/check_active.960826e06093589f13a939cd11c7a1af.svg",
@@ -23,11 +23,11 @@
     "static/media/check.svg": "/ad-data-donation/static/media/check.62d1e3846cf9f4002c37c986555f222e.svg",
     "static/media/radio.svg": "/ad-data-donation/static/media/radio.a8976f7cd2094465a9e60270572060bb.svg",
     "main.88098551.css.map": "/ad-data-donation/static/css/main.88098551.css.map",
-    "main.92e2a841.js.map": "/ad-data-donation/static/js/main.92e2a841.js.map",
+    "main.044f6942.js.map": "/ad-data-donation/static/js/main.044f6942.js.map",
     "120.a7d39374.chunk.js.map": "/ad-data-donation/static/js/120.a7d39374.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.88098551.css",
-    "static/js/main.92e2a841.js"
+    "static/js/main.044f6942.js"
   ]
 }
