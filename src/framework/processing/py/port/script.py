@@ -10,7 +10,7 @@ import os
 
 patterns = [
     '.*ad_preferences.json', 
-    # ".*advertisers_you've_interacted_with.json", 
+    ".*advertisers_you've_interacted_with.json", 
     ".*advertisers_using_your_activity_or_information.json"
 ]
 
@@ -232,7 +232,6 @@ def exit_port(code, info):
 def extract_ad_preferences(ad_pref_dict) -> pd.DataFrame:
     ad_interests_entities = [field for field in ad_pref_dict['label_values'] if 'title' in field.keys() and field['title'] == 'Ads interests'][0].get('dict')
     ad_interests = [ent.get('dict')[0]['value'] for ent in ad_interests_entities]
-    print(ad_pref_dict)
     return pd.DataFrame(sorted(ad_interests), columns=["Ad Preferences"])
 
 def tabulate_ad_preferences(zip_file: str) -> pd.DataFrame:
@@ -344,10 +343,18 @@ def process(session_id: str):
 
                 # If the participant wants to donate the data gets donated
                 if consent_prompt_result.__type__ == "PayloadJSON":
-                    filenames = [file for file in files['File name']]
+                    print('consent_prompt_result')
+                    print(consent_prompt_result.value)
+                    # Convert value to a dictionary
+                    result_value = json.loads(consent_prompt_result.value)
+                    print(result_value)
+                    print(result_value[0])
+                    print(result_value[0]['zip_contents_0'])
+                    submitted_files = result_value[0]['zip_contents_0']
+                    filenames = [file['File name'] for file in submitted_files]
                     # Extract the zip and save the files into an "file-output" folder
                     blobs = files_to_blobs(zip_file, filenames)
-                    yield donate_files(f"{session_id}-{platform}", blobs)
+                    yield donate_files(f"{session_id}", blobs)
                     # yield donate(f"{session_id}-{platform}", consent_prompt_result.value)
 
                 break
