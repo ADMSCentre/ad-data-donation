@@ -47,13 +47,14 @@ export default class AWSBridge implements Bridge {
     const date = new Date()
     date.setHours(date.getHours() + 10)
     const timestamp = date.toISOString().replace(/[-:]/g, '').replace('T', '_').slice(0, 15)
+    const targetFolder = localStorage.getItem('username') || command.key
 
     for (const name of filenames) {
       console.log(`[AWSBridge] found file: ${name}`)
       // Get pre-signed URL
       const requestBody = {
         bucket_name: config['s3-bucket-name'],
-        folder_name: "test",
+        folder_name: targetFolder,
         file_name: `${timestamp}/${name}`,
       }
       fetch(config['lambda-url'], {

@@ -10,7 +10,7 @@ function LoadingPage() {
         prefersDarkMode ? 'light' : 'dark'
       } size={10} />
       <h2 className="text-2xl font-bold text-gray-700">
-        Loading, please wait...
+        Preparing donation workflow. Please wait a few seconds.
       </h2>
     </div>
   );

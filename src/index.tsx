@@ -21,6 +21,7 @@ const run = (bridge: Bridge, locale: string): void => {
 }
 
 console.log(`Running AWSBridge in ${process.env.NODE_ENV} mode`)
+
 run(new AWSBridge(), 'en')
 
 const observer = new ResizeObserver(() => {
