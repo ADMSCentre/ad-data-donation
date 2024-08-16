@@ -7,6 +7,7 @@ import { Title4 } from "./text"
 import TextBundle from "../../../../text_bundle"
 import { Translator } from "../../../../translator"
 import { Table } from "./table"
+import { AgGridTable } from "./ag_grid_table"
 
 interface TableContainerProps {
   id: string
@@ -73,70 +74,37 @@ export const TableContainer = ({ id, table, updateTable, locale }: TableContaine
   const unfilteredRows = table.body.rows.length
 
   return (
-    <div
-      key={table.id}
-      className="p-3 md:p-4 lg:p-6 flex flex-col gap-4 w-full overflow-hidden border-gray-200 dark:border-gray-700 dark:border-gray-700 border-l-4 not-prose"
-    >
-      <div className="flex flex-wrap ">
-        <div key="Title" className="flex sm:flex-row justify-between w-full gap-1 mb-2">
-          <Title4 text={table.title} margin="" />
-
-          {unfilteredRows > 0 ? (
-            <SearchBar placeholder={text.searchPlaceholder} search={search} onSearch={setSearch} />
-          ) : null}
-        </div>
-        <div key="Description" className="flex flex-col w-full mb-2 text-base md:text-lg font-body max-w-2xl">
-          <p>{table.description}</p>
-        </div>
-        <div key="TableSummary" className="flex items-center justify-between w-full mt-1 pt-1 rounded ">
-          <TableItems table={table} searchedTable={searchedTable} handleUndo={handleUndo} locale={locale} />
-
-          <button
-            key={show ? "animate" : ""}
-            className={`flex end gap-3 animate-fadeIn ${unfilteredRows === 0 ? "hidden" : ""}`}
-            onClick={() => setShow(!show)}
+    <>
+      <div
+        key={table.id}
+        className="p-3 md:p-4 lg:p-6 flex flex-col gap-4 w-full overflow-hidden border-gray-200 dark:border-gray-700 dark:border-gray-700 border-l-4 not-prose"
+      >
+        <AgGridTable id={id} table={table} updateTable={updateTable} locale={locale} />
+        <div className="flex flex-wrap ">
+          <div key="Description" className="flex flex-col w-full mb-2 text-base md:text-lg font-body max-w-2xl">
+            <p>{table.description}</p>
+          </div>
+          <div
+            key="Visualizations"
+            className={`pt-2 grid w-full gap-4 transition-all ${tableVisualizations.length > 0 && unfilteredRows > 0 ? "" : "hidden"
+              }`}
           >
-            <div key="zoomIcon" className="text-primary">
-              {show ? zoomOutIcon : zoomInIcon}
-            </div>
-            <div key="zoomText" className="text-right hidden md:block">
-              {show ? text.hideTable : text.showTable}
-            </div>
-          </button>
-        </div>
-        <div key="Table" className="w-full">
-          <div className="">
-            <Table
-              show={show}
-              table={searchedTable}
-              search={search}
-              unfilteredRows={unfilteredRows}
-              handleDelete={handleDelete}
-              handleUndo={handleUndo}
-              locale={locale}
-            />
+            {tableVisualizations.map((vs: any, i: number) => {
+              return (
+                <Figure
+                  key={table.id + "_" + String(i)}
+                  tableInput={searchedTable}
+                  visualizationInput={vs}
+                  locale={locale}
+                  handleDelete={handleDelete}
+                  handleUndo={handleUndo}
+                />
+              )
+            })}
           </div>
         </div>
-        <div
-          key="Visualizations"
-          className={`pt-2 grid w-full gap-4 transition-all ${tableVisualizations.length > 0 && unfilteredRows > 0 ? "" : "hidden"
-            }`}
-        >
-          {tableVisualizations.map((vs: any, i: number) => {
-            return (
-              <Figure
-                key={table.id + "_" + String(i)}
-                tableInput={searchedTable}
-                visualizationInput={vs}
-                locale={locale}
-                handleDelete={handleDelete}
-                handleUndo={handleUndo}
-              />
-            )
-          })}
-        </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -32,7 +32,7 @@ def get_translatable_prompt(markdown_path: str) -> props.Translatable:
     }
     return props.Translatable(translatable)
 
-def extract_the_data_you_are_interested_in(zip_file: str) -> pd.DataFrame:
+def extract_files_metadata(zip_file: str) -> pd.DataFrame:
     """
     This function extracts the data the researcher is interested in
 
@@ -123,7 +123,6 @@ def generate_file_prompt(description_public_path, extensions) -> props.PropsUIPr
     # Load description from public folder
     description = get_translatable_prompt(description_public_path)
     return props.PropsUIPromptFileInput(description, extensions)
-
 
 def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentForm:
     description = get_translatable_prompt("consent_form.md")
@@ -263,7 +262,6 @@ def extract_advertisers(zip_file: str) -> pd.DataFrame:
     try:
         file = zipfile.ZipFile(zip_file)
         for name in file.namelist():
-            info = file.getinfo(name)
             if (name.endswith('advertisers_using_your_activity_or_information.json')):
                 with file.open(name) as json_file:
                     advertiser_dict = json.load(json_file)
@@ -278,26 +276,7 @@ def extract_advertisers(zip_file: str) -> pd.DataFrame:
 
     return out
 
-def save_files(zip_file: str, filenames: list[str]):
-    outpath = "file-output"
-    try:
-        # Create the output folder if it does not exist
-        if not os.path.exists(outpath):
-            os.makedirs(outpath)
-        with zipfile.ZipFile(zip_file) as zf:
-            for name in filenames:
-                with zf.open(name) as file:
-                    # If the name has a path, create the path
-                    if "/" in name:
-                        path = os.path.join(outpath, os.path.dirname(name))
-                        os.makedirs(path, exist_ok=True)
-                    with open(f"{outpath}/{name}", "wb") as out:
-                        out.write(file.read())
-                        print(f"Saved {name} to {outpath}")
-    except zipfile.BadZipFile:
-        return False
-
-def files_to_blobs(zip_file: str, filenames: list[str]):
+def get_file_contents(zip_file: str, filenames: list[str]):
     out = {}
     try:
         with zipfile.ZipFile(zip_file) as zf:
@@ -334,11 +313,11 @@ def process(session_id: str):
                 # Extract the data you as a researcher are interested in, and put it in a pandas DataFrame
                 # Show this data to the participant in a table on screen
                 # The participant can now decide to donate
-                files = extract_the_data_you_are_interested_in(zip_file)
-                extracted_data_statistics = tabulate_ad_preferences(zip_file)
-                extracted_advertisers = extract_advertisers(zip_file)
+                files_metadata = extract_files_metadata(zip_file)
+                ad_preferences = tabulate_ad_preferences(zip_file)
+                advertisers = extract_advertisers(zip_file)
                 # consent_prompt = generate_consent_prompt(extracted_data_statistics, extracted_advertisers)
-                consent_prompt = generate_consent_prompt(files)
+                consent_prompt = generate_consent_prompt(files_metadata, ad_preferences, advertisers)
                 consent_prompt_result = yield render_page(platform, consent_prompt)
 
                 # If the participant wants to donate the data gets donated
@@ -353,7 +332,7 @@ def process(session_id: str):
                     submitted_files = result_value[0]['zip_contents_0']
                     filenames = [file['File name'] for file in submitted_files]
                     # Extract the zip and save the files into an "file-output" folder
-                    blobs = files_to_blobs(zip_file, filenames)
+                    blobs = get_file_contents(zip_file, filenames)
                     yield donate_files(f"{session_id}", blobs)
                     # yield donate(f"{session_id}-{platform}", consent_prompt_result.value)
 
