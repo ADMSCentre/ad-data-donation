@@ -28,7 +28,7 @@ export default class AWSBridge implements Bridge {
 
   handleDonation (command: CommandSystemDonate): void {
     console.log(`[AWSBridge] received donation: ${command.key}=${command.json_string}`)
-    console.log(`[AWSBridge] sending donation to AWS: ${config['lambda-url']}`)
+    console.log(`[AWSBridge] sending donation to AWS: ${config['lambda-put-url']}`)
 
     const requestBody = {
       bucket_name: config['s3-bucket-name'],
@@ -39,7 +39,7 @@ export default class AWSBridge implements Bridge {
 
   handleFilesDonation (command: CommandSystemDonateFiles): void {
     console.log(`[AWSBridge] received files donation: ${command.key}=${command.fileContents}`)
-    console.log(`[AWSBridge] sending files donation to AWS: ${config['lambda-url']}`)
+    console.log(`[AWSBridge] sending files donation to AWS: ${config['lambda-put-url']}`)
 
     const filenames = Object.keys(command.fileContents)
 
@@ -57,7 +57,7 @@ export default class AWSBridge implements Bridge {
         folder_name: targetFolder,
         file_name: `${timestamp}/${name}`,
       }
-      fetch(config['lambda-url'], {
+      fetch(config['lambda-put-url'], {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

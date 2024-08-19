@@ -12,10 +12,10 @@ function spinnerColor(buttonColor: string): string {
   return 'light'
 }
 
-export const PrimaryButton = ({ label, spinning = false, enabled = true, color = 'bg-primary text-white', onClick }: Weak<PropsUIButtonPrimary>): JSX.Element => {
+export const PrimaryButton = ({ label, spinning = false, enabled = true, color = 'bg-primary text-text', onClick }: Weak<PropsUIButtonPrimary>): JSX.Element => {
   return (
     <div className='relative min-w-button'>
-      <div className={`flex flex-col items-center leading-none font-button text-button rounded ${enabled ? 'cursor-pointer active:shadow-top4px' : ''} ${color}`} onClick={onClick}>
+      <div className={`flex flex-col items-center leading-none font-button text-button rounded ${enabled ? 'cursor-pointer active:shadow' : ''} ${color}`} onClick={onClick}>
         <div id='confirm-button' className={`pt-15px pb-15px pr-4 pl-4 ${enabled ? 'active:pt-4 active:pb-14px' : ''} ${spinning ? 'opacity-0' : ''}`}>
           {label}
         </div>

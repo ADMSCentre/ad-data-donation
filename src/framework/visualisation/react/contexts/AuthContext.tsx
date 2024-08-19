@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useCallback, useEffect } from "react";
 
 export const AuthContext = createContext({
   isAuthenticated: false,
@@ -19,19 +19,24 @@ const AuthProvider = ({ children }: {
       setIsAuthenticated(true);
       setUsername(username);
     }
+    return () => {
+      setIsAuthenticated(false);
+      setUsername("");
+    }
   }, []);
 
-  const handleLogin = (username: string) => {
+  const handleLogin = useCallback((username: string) => {
     if (!username) return;
     localStorage.setItem("username", username);
     setUsername(username);
     setIsAuthenticated(true);
-  };
+  }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("username");
     setIsAuthenticated(false);
-  };
+    setUsername("");
+  }, []);
 
   return (
     <AuthContext.Provider value={{ username, isAuthenticated, handleLogin, handleLogout }}>

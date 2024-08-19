@@ -1,8 +1,8 @@
 import * as React from "react";
-import * as ReactDOM from 'react-dom/client'
 import AuthProvider, { AuthContext } from "./contexts/AuthContext";
 import { BsQuestionCircle } from "react-icons/bs"
 import { Tooltip } from 'react-tooltip'
+import NavBar from "./ui/elements/navbar";
 
 interface MainProps {
   elements: JSX.Element[];
@@ -35,7 +35,7 @@ const Login = () => {
         <BsQuestionCircle
           className="text-text"
           data-tooltip-id="my-tooltip"
-          data-tooltip-content="The UUID is unique to each user and is used to identify you in the system without revealing your identity. Logging in allows you to access your donation history."
+          data-tooltip-content="The Unique User ID (UUID) is unique to each user and is used to identify you in the system without revealing your identity. Logging in allows you to access your donation history."
         />
         <input
           type="text"
@@ -74,31 +74,20 @@ const Logout = () => {
   );
 }
 
-const rootElement = document.getElementById('root') as HTMLElement
 
 const Standalone = ({ elements }: MainProps): JSX.Element => {
   const { isAuthenticated } = React.useContext(AuthContext);
 
   return (
     <div className="flex flex-col w-full h-full">
-      <header className="flex flex-row-reverse justify-between h-full border-b-2 shadow border-primary p-4 bg-primarylight bg-opacity-20">
-        {isAuthenticated ? <Logout /> : <Login />}
-        <div>
-          <button className="text-text rounded-md px-2 font-semibold" onClick={() => {
-            window.location.href = "/";
-          }}
-          >
-            Home
-          </button>
-          <button className="text-text rounded-md px-2 font-semibold" onClick={() => {
-            ReactDOM.createRoot(rootElement).render(<Main elements={[<div>Donations</div>]} />)
-          }}>
-            My Donations
-          </button>
-        </div>
+      <header className="flex flex-row-reverse justify-between h-full border-b-2 shadow border-primary p-4 bg-primarylight bg-opacity-5">
+        {isAuthenticated
+          ? <Logout />
+          : <Login />}
+        <NavBar />
       </header>
       <div className="p-4 sm:p-8 md:p-12 flex justify-center w-full h-full">
-        <div className="max-w-3xl">{elements}</div>
+        <div>{elements}</div>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { PropsUIPage } from '../../types/pages'
 import VisualisationFactory from './factory'
 import { Main } from './main'
 import LoadingPage from './ui/pages/loading_page'
+import UserDonationsPage from './ui/pages/user_donations_page'
 
 
 export default class ReactEngine implements VisualisationEngine {
@@ -20,6 +21,11 @@ export default class ReactEngine implements VisualisationEngine {
   start(rootElement: HTMLElement, locale: string): void {
     console.log('[ReactEngine] started')
     this.root = ReactDOM.createRoot(rootElement)
+    // if the url ends with /donations, render the UserDonationsPage
+    if (window.location.pathname.endsWith('/donations')) {
+      this.root.render(<Main elements={[<UserDonationsPage />]} />)
+      return
+    }
     this.root.render(<Main elements={[<LoadingPage />]} />)
     this.locale = locale
   }

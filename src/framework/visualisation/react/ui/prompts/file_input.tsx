@@ -41,7 +41,7 @@ export const FileInput = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div id='select-panel'>
+      <div id='select-panel' className='max-w-3xl'>
         <div className='flex-wrap text-bodylarge font-body text-grey1 text-left'>
           <MarkdownPrompt content={description} />
         </div>

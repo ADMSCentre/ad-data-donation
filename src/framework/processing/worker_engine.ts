@@ -59,8 +59,13 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
   }
 
   start (): void {
+    // If the url is not base url, do not start the engine
+    if (window.location.pathname !== '/') {
+      console.log('[WorkerProcessingEngine] skipped Python worker start')
+      return
+    }
+    
     console.log('[WorkerProcessingEngine] started')
-
     const waitForInitialization: Promise<void> = this.waitForInitialization()
 
     waitForInitialization.then(
