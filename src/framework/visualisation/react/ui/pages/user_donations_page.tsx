@@ -29,7 +29,7 @@ function parseS3XML(xmlData: string) {
     const size = +(contents[i].getElementsByTagName("Size")[0].childNodes[0].nodeValue || "");
     const timestampAsDate = new Date(
       +timestamp.slice(0, 4),
-      +timestamp.slice(4, 6),
+      +timestamp.slice(4, 6) - 1, // Month is 0-indexed
       +timestamp.slice(6, 8),
       +timestamp.slice(9, 11),
       +timestamp.slice(11, 13),
