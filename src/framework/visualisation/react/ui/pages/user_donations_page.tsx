@@ -121,7 +121,7 @@ function DonationPackage({ donation }: {
   const formattedTime = `${hours12}:${minutes} ${ampm}`;
 
   return (
-    <div className="min-w-72 border border-primary p-4 flex flex-col justify-between rounded shadow hover:shadow-lg transition-all bg-primarylight bg-opacity-10 hover:bg-opacity-100">
+    <div className="w-80 border-l-4 border-primary p-4 flex flex-col justify-between shadow hover:shadow-lg transition-all bg-primarylight bg-opacity-10 hover:bg-opacity-100">
       <div>
         <div className="flex gap-4 items-center justify-between">
           <div className="font-semibold">{donation.date}</div>
@@ -129,7 +129,7 @@ function DonationPackage({ donation }: {
         </div>
         <div className="font-light text-xs p-2">
           {donation.files.map((file, index) => (
-            <div key={index}>{decodeURIComponent(file.filename)}</div>
+            <div className="text-wrap" key={index}>{decodeURIComponent(file.filename)}</div>
           ))}
         </div>
       </div>
@@ -174,7 +174,7 @@ const UserDonationsPage = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <div className="flex flex-wrap gap-4 w-2/3 justify-center">
+        <div className="flex flex-wrap gap-4 max-w-3/4 justify-center">
           {donations && donations.length > 0 ? (
             donations.map((donation, index) => (
               <DonationPackage key={donation.timestamp} donation={donation} />
