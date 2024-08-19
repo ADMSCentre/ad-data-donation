@@ -60,7 +60,7 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
 
   start (): void {
     // If the url is not base url, do not start the engine
-    if (window.location.pathname !== '/') {
+    if (window.location.hash !== '') {
       console.log('[WorkerProcessingEngine] skipped Python worker start')
       return
     }

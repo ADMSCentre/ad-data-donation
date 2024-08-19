@@ -21,8 +21,8 @@ export default class ReactEngine implements VisualisationEngine {
   start(rootElement: HTMLElement, locale: string): void {
     console.log('[ReactEngine] started')
     this.root = ReactDOM.createRoot(rootElement)
-    // if the url ends with /donations, render the UserDonationsPage
-    if (window.location.pathname.endsWith('/donations')) {
+    // if the url ends with #donations, render the UserDonationsPage
+    if (window.location.hash === '#donations') {
       this.root.render(<Main elements={[<UserDonationsPage />]} />)
       return
     }

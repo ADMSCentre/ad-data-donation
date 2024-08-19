@@ -8,7 +8,7 @@ const rootElement = document.getElementById('root') as HTMLElement
 
 const NavItem = ({ onClick, requiresLogin = false, children }:
   {
-    onClick: () => void,
+    onClick?: () => void,
     requiresLogin?: boolean
     children: React.ReactNode
   }) => {
@@ -33,14 +33,18 @@ const NavBar = () => {
     <div>
       <NavItem
         onClick={() => {
-          window.location.href = "/";
+          // Navigate to the home page
+          window.location.hash = '';
+          window.location.reload();
         }}
       >
         Home
       </NavItem>
       <NavItem
         onClick={() => {
-          window.location.href = "/donations";
+          // Navigate to the donations page
+          window.location.hash = 'donations';
+          window.location.reload();
         }}
         requiresLogin
       >
