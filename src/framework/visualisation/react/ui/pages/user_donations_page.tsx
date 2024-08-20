@@ -1,11 +1,13 @@
 // For users to see their own donations once logged in
 
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import awsConfig from "../../../../../aws.config";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { BsClipboardData, BsDownload, BsViewList } from "react-icons/bs"
+import { BarLoader } from "react-spinners";
+import JSZip from "jszip";
 
 interface Donation {
   timestamp: string;
@@ -58,7 +60,7 @@ async function fetchGetUserDonations(username: string) {
     "bucket_name": awsConfig["s3-bucket-name"],
     "path": `${username}/`
   }
-  const presignedUrlResponse = await fetch(`${awsConfig["lambda-get-url"]}`, {
+  const presignedUrlResponse = await fetch(`${awsConfig["lambda-list-url"]}`, {
     method: "POST",
     body: JSON.stringify(requestBody),
   })
@@ -120,6 +122,48 @@ function DonationPackage({ donation }: {
   const hours12 = hours % 12 || 12;
   const formattedTime = `${hours12}:${minutes} ${ampm}`;
 
+  const [isDownloading, setIsDownloading] = useState(false);
+  const { username } = useContext(AuthContext);
+  const zip = new JSZip();
+
+  const downloadFiles = useCallback(() => {
+    setIsDownloading(true);
+    const downloadUrl = `${awsConfig["lambda-get-url"]}`;
+    const promises = donation.files.map((file) => {
+      return fetch(downloadUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          bucket_name: awsConfig["s3-bucket-name"],
+          path: `${username}/${donation.timestamp}/${file.filename}`
+        })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const { url } = data;
+          // Get the file as a blob
+          return fetch(url)
+            .then((response) => response.blob())
+        })
+    });
+    Promise.all(promises).then((blobs) => {
+      blobs.forEach((blob, index) => {
+        zip.file(donation.files[index].filename, blob);
+      });
+      zip.generateAsync({ type: "blob" })
+        .then((content) => {
+          const url = URL.createObjectURL(content);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${donation.timestamp}.zip`;
+          a.click();
+        });
+      setIsDownloading(false);
+    }).catch((error) => {
+      console.error("Failed to download files", error);
+      setIsDownloading(false);
+    });
+  }, [donation.files, donation.timestamp, username]);
+
   return (
     <div className="w-80 border-l-4 border-primary p-4 flex flex-col justify-between shadow hover:shadow-lg transition-all bg-primarylight bg-opacity-10 hover:bg-opacity-100">
       <div>
@@ -143,15 +187,26 @@ function DonationPackage({ donation }: {
           <BsClipboardData />
           <span>Summary</span>
         </a>
-        <a
-          href={"#"}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 text-primary hover:text-primarydark transition-all"
+        <button
+          type="button"
+          className="flex items-center gap-2 hover:text-primarydark transition-all text-text underline disabled:cursor-not-allowed"
+          disabled={isDownloading}
+          onClick={downloadFiles}
         >
-          <BsDownload />
-          <span>Download ({kilobytes} KB)</span>
-        </a>
+          {
+            !isDownloading
+              ? (
+                <>
+                  <BsDownload />
+                  <span>Download ({kilobytes} KB)</span>
+                </>
+              ) : (
+                <>
+                  <BarLoader color="#000" />
+                </>
+              )
+          }
+        </button>
       </div>
     </div>
   );
