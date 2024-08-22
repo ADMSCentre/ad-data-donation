@@ -12,6 +12,8 @@ import useListUserDonations from '../hooks/useListUserDonations'
 import JSZip from 'jszip'
 import awsConfig from '../../../../../aws.config'
 import { AuthContext } from '../../contexts/AuthContext'
+import { Login } from '../elements/authentication'
+import { BsExclamationDiamond } from 'react-icons/bs'
 
 type Props = Weak<PropsUIPromptFileInput> & ReactFactoryContext
 
@@ -123,27 +125,43 @@ export const FileInput = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div id='select-panel' className='max-w-3xl'>
+      <div id='select-panel' className='max-w-3xl flex flex-col gap-8'>
         <div className='flex-wrap text-bodylarge font-body text-grey1 text-left'>
           <MarkdownPrompt content={description} />
         </div>
-        <div className='mt-8' />
-        <div className='p-2 border-2 border-gray-200 dark:border-gray-700  rounded'>
-          <input ref={input} id='input' type='file' className='hidden' accept={extensions} onChange={handleSelect} />
-          <div className='flex flex-row gap-4 items-center'>
-            <BodyMedium text={selectedFile?.name ?? placeholder} margin='' color={selectedFile === undefined ? 'text-grey2' : 'textgrey1'} />
-            <div className='flex-grow' />
-            <PrimaryButton onClick={handleClick} label={selectButton} color='bg-secondary border-secondary text-grey1' />
-          </div>
-        </div>
-        <div className='mt-4' />
-        <div className={`${selectedFile === undefined ? 'opacity-30' : 'opacity-100'}`}>
-          <BodySmall text={note} margin='' />
-          <div className='mt-8' />
-          <div className='flex flex-row gap-4'>
-            <PrimaryButton label={continueButton} onClick={handleConfirm} enabled={selectedFile !== undefined} spinning={waiting} />
-          </div>
-        </div>
+        {
+          !auth.isAuthenticated
+            ? (
+              <div className='border-l-4 border-primary bg-primary bg-opacity-10 text-lg p-4 flex font-semibold gap-4 flex-col'>
+                <div className='flex flex-row gap-2'>
+                  <BsExclamationDiamond className='text-primary' size={32} />
+                  Before you can continue, please log in with your Unique User ID (UUID) below.
+                </div>
+                <div className='flex w-full justify-center'>
+                  <Login />
+                </div>
+              </div>
+            )
+            : (
+              <>
+                <div className='p-2 border-2 border-gray-200 dark:border-gray-700  rounded'>
+                  <input ref={input} id='input' type='file' className='hidden' accept={extensions} onChange={handleSelect} />
+                  <div className='flex flex-row gap-4 items-center'>
+                    <BodyMedium text={selectedFile?.name ?? placeholder} margin='' color={selectedFile === undefined ? 'text-grey2' : 'textgrey1'} />
+                    <div className='flex-grow' />
+                    <PrimaryButton onClick={handleClick} label={selectButton} color='bg-secondary border-secondary text-grey1' />
+                  </div>
+                </div>
+                <div className={`${selectedFile === undefined ? 'opacity-30' : 'opacity-100'}`}>
+                  <BodySmall text={note} margin='' />
+                  <div className='mt-8' />
+                  <div className='flex flex-row gap-4'>
+                    <PrimaryButton label={continueButton} onClick={handleConfirm} enabled={selectedFile !== undefined} spinning={waiting} />
+                  </div>
+                </div>
+              </>
+            )
+        }
       </div>
     </>
   )

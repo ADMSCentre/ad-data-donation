@@ -3,6 +3,7 @@ import AuthProvider, { AuthContext } from "./contexts/AuthContext";
 import { BsQuestionCircle } from "react-icons/bs"
 import { Tooltip } from 'react-tooltip'
 import NavBar from "./ui/elements/navbar";
+import { Login, Logout } from "./ui/elements/authentication";
 
 interface MainProps {
   elements: JSX.Element[];
@@ -20,79 +21,48 @@ export const Main = ({ elements }: MainProps): JSX.Element => {
   );
 };
 
-const Login = () => {
-  // Login and store username in local storage
-  const [username, setUsername] = React.useState("");
 
-  const { handleLogin } = React.useContext(AuthContext);
 
-  return (
-    <>
-      <Tooltip id="my-tooltip" style={{
-        maxWidth: "500px",
-      }} />
-      <div className="flex flex-row items-center gap-2">
-        <BsQuestionCircle
-          className="text-text"
-          data-tooltip-id="my-tooltip"
-          data-tooltip-content="The Unique User ID (UUID) is unique to each user and is used to identify you in the system without revealing your identity. Logging in allows you to access your donation history."
-        />
-        <input
-          type="text"
-          value={username}
-          className="border border-primary rounded px-2 bg-behind"
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter UUID..."
-        />
-        <button
-          className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0 hover:text-primary transition-all"
-          onClick={() => handleLogin(username)}
-          disabled={!username}
-        >
-          Login
-        </button>
-      </div>
-    </>
-  );
-}
-
-const Logout = () => {
-  // Logout and remove username from local storage
-  const { username, handleLogout } = React.useContext(AuthContext);
+function Logo() {
+  const orgs = [
+    {
+      name: "ARC Centre of Excellence for Automated Decision-Making and Society",
+      logoUrl: "https://www.unimelb.edu.au/__data/assets/image/0006/3625854/ADM-S-Logo.png",
+      url: "https://www.admscentre.org.au/"
+    },
+    {
+      name: "University of Queensland",
+      logoUrl: "https://usercontent.one/wp/studyoptions.com/wp-content/uploads/2023/08/UQlogo.png",
+      url: "https://www.uq.edu.au/"
+    }
+  ]
 
   return (
-    <div className="flex flex-row gap-4">
-      <span>
-        Logged in as <span className="font-semibold">{username}</span>
-      </span>
-      <button
-        className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer hover:text-primary transition-all"
-        onClick={() => {
-          handleLogout();
-          // Clear query parameters
-          const review = window.location.search.includes("review");
-          if (review) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-            window.location.reload();
-          }
-        }}>
-        Logout
-      </button>
+    <div className="h-20 sm:h-12 flex gap-2 items-center">
+      {orgs.map((org, index) => (
+        <a key={index} href={org.url} target="_blank" rel="noreferrer" className="h-full">
+          <img src={org.logoUrl} alt={org.name} className="!m-0 bg-white object-contain max-h-full" />
+        </a>
+      ))}
     </div>
   );
 }
-
 
 const Standalone = ({ elements }: MainProps): JSX.Element => {
   const { isAuthenticated } = React.useContext(AuthContext);
 
   return (
     <div className="flex flex-col w-full h-full">
-      <header className="sticky top-0 z-[999] flex flex-row-reverse justify-between h-full border-b-2 shadow border-primary p-4 bg-primary">
-        {isAuthenticated
-          ? <Logout />
-          : <Login />}
-        <NavBar />
+      <header className="sm:sticky top-0 z-[999] flex-col flex md:flex-row justify-between sm:items-center h-full border-b-2 shadow border-primary p-2 bg-primary gap-2">
+        <div className="flex gap-2 items-center flex-col sm:flex-row">
+          <Logo />
+        </div>
+        <div className="flex justify-between flex-1 w-full">
+          <NavBar />
+          {isAuthenticated
+            ? <Logout />
+            : <Login />}
+        </div>
       </header>
       <div className="p-4 sm:p-8 md:p-12 flex justify-center w-full h-full">
         <div>{elements}</div>

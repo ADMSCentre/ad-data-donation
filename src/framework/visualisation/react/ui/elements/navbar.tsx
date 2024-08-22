@@ -40,7 +40,12 @@ const NavBar = () => {
           window.location.reload();
         }}
       >
-        Home
+        Donate
+      </NavItem>
+      <NavItem
+        to="https://www.admscentre.org.au/ad-observatory-project/"
+      >
+        About
       </NavItem>
       <NavItem
         onClick={() => {
