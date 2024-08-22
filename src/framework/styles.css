@@ -56,7 +56,7 @@ h2 {
   @apply text-2xl font-bold;
 }
 details.secondary {
-  @apply bg-secondary p-2 pl-4 bg-opacity-20 border-l-4 border-secondary;
+  @apply bg-secondary p-2 pl-4 bg-opacity-10 border-l-4 border-secondary;
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }

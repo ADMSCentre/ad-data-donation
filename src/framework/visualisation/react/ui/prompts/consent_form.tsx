@@ -176,7 +176,7 @@ export const ConsentForm = (props: Props): JSX.Element => {
 
   return (
     <div>
-      <div className="max-w-3xl my-8 bg-primary bg-opacity-20 border-primary border-l-4">
+      <div className="max-w-3xl my-8 bg-primary bg-opacity-10 border-primary border-l-4">
         {/* {description.split("\n").map((line, index) => (
           <BodyLarge key={"description" + String(index)} text={line} />
         ))} */}

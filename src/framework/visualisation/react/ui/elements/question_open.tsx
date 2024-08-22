@@ -21,15 +21,15 @@ export const OpenQuestion = (props: Props): JSX.Element => {
     setUserAnswer(event.target.value);
   };
 
-  const setParentState = ()  => {
+  const setParentState = () => {
     parentSetter((prevState: any) => {
-       prevState[id] = userAnswer
-       return prevState
+      prevState[id] = userAnswer
+      return prevState
     })
   }
 
   React.useEffect(() => {
-      setParentState()
+    setParentState()
   })
 
   return (
@@ -39,12 +39,12 @@ export const OpenQuestion = (props: Props): JSX.Element => {
         type="text"
         value={userAnswer}
         onChange={handleInputChange}
-        className="w-full px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md resize-none h-16"
+        className="w-full px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded resize-none h-16"
       />
     </div>
   );
 
-  function prepareCopy (locale: string): Copy {
+  function prepareCopy(locale: string): Copy {
     return {
       question: Translator.translate(question, locale)
     }

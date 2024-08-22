@@ -40,12 +40,12 @@ const Login = () => {
         <input
           type="text"
           value={username}
-          className="border border-primary rounded-md px-2"
+          className="border border-primary rounded px-2"
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter UUID..."
         />
         <button
-          className="bg-primary text-text rounded-md px-2 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-primarylight bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0"
           onClick={() => handleLogin(username)}
           disabled={!username}
         >
@@ -66,8 +66,16 @@ const Logout = () => {
         Logged in as <span className="font-semibold">{username}</span>
       </span>
       <button
-        className="bg-primary text-text rounded-md px-2 font-semibold"
-        onClick={handleLogout}>
+        className="bg-primarylight bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer"
+        onClick={() => {
+          handleLogout();
+          // Clear query parameters
+          const review = window.location.search.includes("review");
+          if (review) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            window.location.reload();
+          }
+        }}>
         Logout
       </button>
     </div>
@@ -80,7 +88,7 @@ const Standalone = ({ elements }: MainProps): JSX.Element => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <header className="flex flex-row-reverse justify-between h-full border-b-2 shadow border-primary p-4 bg-primarylight bg-opacity-5">
+      <header className="sticky top-0 z-[999] flex flex-row-reverse justify-between h-full border-b-2 shadow border-primary p-4 bg-primary">
         {isAuthenticated
           ? <Logout />
           : <Login />}

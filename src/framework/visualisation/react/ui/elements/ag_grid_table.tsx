@@ -18,7 +18,7 @@ const SearchBar = ({ search, setSearch }: { search: string, setSearch: (search: 
       type="text"
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className='w-1/4 px-2 border border-gray-300 rounded-md'
+      className='w-1/4 px-2 border border-gray-300 rounded'
       placeholder='Search...'
     />
   )
@@ -101,7 +101,7 @@ export const AgGridTable = ({ id, table, updateTable, locale }: TableContainerPr
         <SearchBar search={search} setSearch={setSearch} />
       </div>
       <div
-        className="ag-theme-quartz" // applying the Data Grid theme
+        className="ag-theme-quartz-auto-dark" // applying the Data Grid theme
       >
         <AgGridReact
           rowData={rows}
@@ -130,14 +130,14 @@ export const AgGridTable = ({ id, table, updateTable, locale }: TableContainerPr
         {
           table.deletedRowCount > 0 ?
             <button onClick={handleUndo}
-              className='text-blue-500 px-2 rounded-md flex items-center gap-1 border border-blue-500 hover:bg-blue-500 hover:text-white'
+              className='text-blue-500 px-2 rounded flex items-center gap-1 border border-blue-500 hover:bg-blue-500 hover:text-white'
             >
               <BsArrowCounterclockwise size={20} />
               Undo
             </button> : <button onClick={() => {
               handleDelete(selectedRows)
             }}
-              className='text-red-500 px-2 rounded-md flex items-center gap-1 border border-red-500 hover:bg-red-500 hover:text-white disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-red-500'
+              className='text-delete px-2 rounded flex items-center gap-1 border border-delete hover:bg-delete hover:text-white disabled:opacity-50 disabled:hover:bg-behind disabled:hover:text-delete'
               disabled={selectedRows.length === 0}
             >
               <BsTrash2 size={20} />

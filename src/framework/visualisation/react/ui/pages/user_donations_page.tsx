@@ -9,6 +9,7 @@ import { BsClipboardData, BsDownload, BsViewList } from "react-icons/bs"
 import { BarLoader } from "react-spinners";
 import JSZip from "jszip";
 import useListUserDonations from "../hooks/useListUserDonations";
+import withDarkModeLoader from "../elements/loader_wrapper";
 
 interface Donation {
   timestamp: string;
@@ -19,6 +20,8 @@ interface Donation {
     size: number
   }[];
 }
+
+const ThemedBarLoader = withDarkModeLoader(BarLoader);
 
 function DonationPackage({ donation }: {
   donation: Donation;
@@ -87,18 +90,18 @@ function DonationPackage({ donation }: {
           ))}
         </div>
       </div>
-      <div className="flex justify-between text-sm">
+      <div className="flex justify-between items-center text-sm">
         <a
           href={`?username=${username}&timestamp=${donation.timestamp}&review=true`}
           rel="noreferrer"
-          className="flex items-center gap-2 text-primary hover:text-primarydark transition-all"
+          className="flex items-center gap-2 text-primary hover:text-primarydark transition-all justify-center"
         >
           <BsClipboardData />
           <span>Summary</span>
         </a>
         <button
           type="button"
-          className="flex items-center gap-2 hover:text-primarydark transition-all text-text underline disabled:cursor-not-allowed"
+          className="flex items-center gap-2 hover:text-primarydark transition-all text-text underline disabled:cursor-not-allowed justify-center"
           disabled={isDownloading}
           onClick={downloadFiles}
         >
@@ -111,7 +114,7 @@ function DonationPackage({ donation }: {
                 </>
               ) : (
                 <>
-                  <BarLoader color="#000" />
+                  <ThemedBarLoader />
                 </>
               )
           }

@@ -21,7 +21,7 @@ const NavItem = ({ onClick, to, requiresLogin = false, children }:
 
   return (
     <a
-      className="text-text rounded-md px-2 font-semibold bg-opacity-0 bg-primary hover:bg-opacity-100 transition-all cursor-pointer"
+      className="text-text rounded px-2 py-1 font-semibold bg-opacity-0 bg-primarylight hover:bg-opacity-100 transition-all cursor-pointer"
       href={to}
       onClick={onClick}
     >
@@ -34,12 +34,17 @@ const NavBar = () => {
   return (
     <div>
       <NavItem
-        to="/ad-data-donation"
+        onClick={() => {
+          // Clear any query parameters and hash
+          window.history.replaceState({}, document.title, window.location.pathname);
+          window.location.reload();
+        }}
       >
         Home
       </NavItem>
       <NavItem
         onClick={() => {
+          window.history.replaceState({}, document.title, window.location.pathname);
           window.location.hash = "#donations";
           window.location.reload();
         }}

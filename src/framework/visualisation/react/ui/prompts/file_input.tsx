@@ -11,6 +11,7 @@ import { MarkdownPrompt } from './markdown_prompt'
 import useListUserDonations from '../hooks/useListUserDonations'
 import JSZip from 'jszip'
 import awsConfig from '../../../../../aws.config'
+import { AuthContext } from '../../contexts/AuthContext'
 
 type Props = Weak<PropsUIPromptFileInput> & ReactFactoryContext
 
@@ -79,6 +80,8 @@ export const FileInput = (props: Props): JSX.Element => {
   }
 
   const urlParams = new URLSearchParams(window.location.search)
+  const auth = React.useContext(AuthContext)
+
   const username = urlParams.get('username')
   const timestamp = urlParams.get('timestamp')
   console.log(username, timestamp)
@@ -96,6 +99,7 @@ export const FileInput = (props: Props): JSX.Element => {
         if (zipFile) resolve?.({ __type__: 'PayloadFile', value: zipFile })
       }
     }
+    if (auth.username !== username) return
     setWaiting(true)
     zipAsFile().then(() => setWaiting(false))
   }, [zip, isLoading])
@@ -129,7 +133,7 @@ export const FileInput = (props: Props): JSX.Element => {
           <div className='flex flex-row gap-4 items-center'>
             <BodyMedium text={selectedFile?.name ?? placeholder} margin='' color={selectedFile === undefined ? 'text-grey2' : 'textgrey1'} />
             <div className='flex-grow' />
-            <PrimaryButton onClick={handleClick} label={selectButton} color='bg-secondary text-grey1' />
+            <PrimaryButton onClick={handleClick} label={selectButton} color='bg-secondary border-secondary text-grey1' />
           </div>
         </div>
         <div className='mt-4' />

@@ -160,7 +160,7 @@ export const Table = ({
       className='grid grid-cols-1 transition-[grid,color] duration-500 relative overflow-hidden text-sm md:text-base'
     >
       <div ref={innerRef} className={`h-min ${unfilteredRows === 0 ? 'invisible' : ''}`}>
-        <div className='my-2 bg-grey6 rounded-md border-gray-200 dark:border-gray-700 border-2'>
+        <div className='my-2 bg-grey6 rounded border-gray-200 dark:border-gray-700 border-2'>
           <div className='p-3 pt-1 pb-2 max-w-full overflow-x-auto'>
             <table className='table-fixed min-w-full '>
               <thead className=''>
