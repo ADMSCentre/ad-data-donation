@@ -188,9 +188,10 @@ export const ConsentForm = (props: Props): JSX.Element => {
       </div>
       <div className="flex flex-col gap-16 w-full">
         <div className="grid gap-8 max-w-full">
-          {tables.map((table) => {
+          {tables.map((table, index) => {
+            const editable = index === 0 && !isReviewing;
             return (
-              <TableContainer key={table.id} id={table.id} table={table} updateTable={updateTable} locale={locale} />
+              <TableContainer key={table.id} id={table.id} table={table} updateTable={updateTable} locale={locale} editable={editable} />
             )
           })}
         </div>

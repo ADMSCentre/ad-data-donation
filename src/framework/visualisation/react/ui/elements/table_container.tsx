@@ -14,9 +14,10 @@ interface TableContainerProps {
   table: TableWithContext
   updateTable: (tableId: string, table: TableWithContext) => void
   locale: string
+  editable: boolean
 }
 
-export const TableContainer = ({ id, table, updateTable, locale }: TableContainerProps): JSX.Element => {
+export const TableContainer = ({ id, table, updateTable, locale, editable }: TableContainerProps): JSX.Element => {
   const tableVisualizations = table.visualizations != null ? table.visualizations : []
   const [searchFilterIds, setSearchFilterIds] = useState<Set<string>>()
   const [search, setSearch] = useState<string>("")
@@ -79,7 +80,7 @@ export const TableContainer = ({ id, table, updateTable, locale }: TableContaine
         key={table.id}
         className="p-3 md:p-4 lg:p-6 flex flex-col gap-4 w-full overflow-hidden border-gray-200 dark:border-gray-700 dark:border-gray-700 border-l-4 not-prose"
       >
-        <AgGridTable id={id} table={table} updateTable={updateTable} locale={locale} />
+        <AgGridTable id={id} table={table} updateTable={updateTable} locale={locale} editable={editable} />
         <div className="flex flex-wrap ">
           <div key="Description" className="flex flex-col w-full mb-2 text-base md:text-lg font-body max-w-2xl">
             <p>{table.description}</p>

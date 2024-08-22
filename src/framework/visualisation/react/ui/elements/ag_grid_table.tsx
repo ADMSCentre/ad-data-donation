@@ -10,6 +10,7 @@ interface TableContainerProps {
   table: TableWithContext
   updateTable: (tableId: string, table: TableWithContext) => void
   locale: string
+  editable: boolean
 }
 
 const SearchBar = ({ search, setSearch }: { search: string, setSearch: (search: string) => void }) => {
@@ -40,7 +41,7 @@ function deleteTableRows(table: TableWithContext, deletedRows: string[][]): Tabl
     deletedRows,
   }
 }
-export const AgGridTable = ({ id, table, updateTable, locale }: TableContainerProps): JSX.Element => {
+export const AgGridTable = ({ id, table, updateTable, locale, editable }: TableContainerProps): JSX.Element => {
   console.log(table)
 
   const [rows, setRows] = useState<any[]>([])
@@ -125,26 +126,28 @@ export const AgGridTable = ({ id, table, updateTable, locale }: TableContainerPr
           }}
         />
       </div>
-      <div className='-mt-14 ml-4 z-10 flex gap-2 w-fit'>
-
-        {
-          table.deletedRowCount > 0 ?
-            <button onClick={handleUndo}
-              className='text-blue-500 px-2 rounded flex items-center gap-1 border border-blue-500 hover:bg-blue-500 hover:text-white'
-            >
-              <BsArrowCounterclockwise size={20} />
-              Undo
-            </button> : <button onClick={() => {
-              handleDelete(selectedRows)
-            }}
-              className='text-delete px-2 rounded flex items-center gap-1 border border-delete hover:bg-delete hover:text-white disabled:opacity-50 disabled:hover:bg-behind disabled:hover:text-delete'
-              disabled={selectedRows.length === 0}
-            >
-              <BsTrash2 size={20} />
-              Delete {selectedRows.length > 0 ? `(${selectedRows.length})` : ''}
-            </button>
-        }
-      </div>
+      {
+        editable &&
+        <div className='-mt-14 ml-4 z-10 flex gap-2 w-fit'>
+          {
+            table.deletedRowCount > 0 ?
+              <button onClick={handleUndo}
+                className='text-blue-500 px-2 rounded flex items-center gap-1 border border-blue-500 hover:bg-blue-500 hover:text-white'
+              >
+                <BsArrowCounterclockwise size={20} />
+                Undo
+              </button> : <button onClick={() => {
+                handleDelete(selectedRows)
+              }}
+                className='text-delete px-2 rounded flex items-center gap-1 border border-delete hover:bg-delete hover:text-white disabled:opacity-50 disabled:hover:bg-behind disabled:hover:text-delete'
+                disabled={selectedRows.length === 0}
+              >
+                <BsTrash2 size={20} />
+                Delete {selectedRows.length > 0 ? `(${selectedRows.length})` : ''}
+              </button>
+          }
+        </div>
+      }
     </div>
   )
 }
