@@ -30,6 +30,13 @@ export const ConsentForm = (props: Props): JSX.Element => {
   const { locale, resolve } = props
   const { description, donateQuestion, donateButton, cancelButton } = prepareCopy(props)
   const [isDonating, setIsDonating] = useState(false)
+  const [isReviewing, setIsReviewing] = useState(false)
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search)
+    // If there is a query parameter 'review', set isReviewing to true
+    setIsReviewing(queryParams.has("review"))
+  }, [])
 
   useEffect(() => {
     setTables(parseTables(props.tables))
@@ -173,9 +180,11 @@ export const ConsentForm = (props: Props): JSX.Element => {
         {/* {description.split("\n").map((line, index) => (
           <BodyLarge key={"description" + String(index)} text={line} />
         ))} */}
-        <div className="p-4">
-          <MarkdownPrompt content={description} className="-mt-8" />
-        </div>
+        {
+          !isReviewing && <div className="p-4">
+            <MarkdownPrompt content={description} className="-mt-8" />
+          </div>
+        }
       </div>
       <div className="flex flex-col gap-16 w-full">
         <div className="grid gap-8 max-w-full">
@@ -185,19 +194,21 @@ export const ConsentForm = (props: Props): JSX.Element => {
             )
           })}
         </div>
-        <div>
-          <BodyLarge margin="" text={donateQuestion} />
+        {
+          !isReviewing && <div>
+            <BodyLarge margin="" text={donateQuestion} />
 
-          <div className="flex flex-row gap-4 mt-4 mb-4">
-            <PrimaryButton
-              label={donateButton}
-              onClick={handleDonate}
-              color="bg-success text-white"
-              spinning={isDonating}
-            />
-            <LabelButton label={cancelButton} onClick={handleCancel} color="text-grey1" />
+            <div className="flex flex-row gap-4 mt-4 mb-4">
+              <PrimaryButton
+                label={donateButton}
+                onClick={handleDonate}
+                color="bg-success text-white"
+                spinning={isDonating}
+              />
+              <LabelButton label={cancelButton} onClick={handleCancel} color="text-grey1" />
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
   )

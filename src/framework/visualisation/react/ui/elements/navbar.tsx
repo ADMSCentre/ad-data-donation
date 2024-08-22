@@ -6,9 +6,10 @@ import UserDonationsPage from "../pages/user_donations_page";
 
 const rootElement = document.getElementById('root') as HTMLElement
 
-const NavItem = ({ onClick, requiresLogin = false, children }:
+const NavItem = ({ onClick, to, requiresLogin = false, children }:
   {
     onClick?: () => void,
+    to?: string,
     requiresLogin?: boolean
     children: React.ReactNode
   }) => {
@@ -19,12 +20,13 @@ const NavItem = ({ onClick, requiresLogin = false, children }:
   }
 
   return (
-    <button
-      className="text-text rounded-md px-2 font-semibold bg-opacity-0 bg-primary hover:bg-opacity-100 transition-all"
+    <a
+      className="text-text rounded-md px-2 font-semibold bg-opacity-0 bg-primary hover:bg-opacity-100 transition-all cursor-pointer"
+      href={to}
       onClick={onClick}
     >
       {children}
-    </button>
+    </a>
   );
 }
 
@@ -32,18 +34,13 @@ const NavBar = () => {
   return (
     <div>
       <NavItem
-        onClick={() => {
-          // Navigate to the home page
-          window.location.hash = '';
-          window.location.reload();
-        }}
+        to="/ad-data-donation"
       >
         Home
       </NavItem>
       <NavItem
         onClick={() => {
-          // Navigate to the donations page
-          window.location.hash = 'donations';
+          window.location.hash = "#donations";
           window.location.reload();
         }}
         requiresLogin

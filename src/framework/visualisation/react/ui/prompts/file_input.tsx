@@ -8,8 +8,63 @@ import { PropsUIPromptFileInput } from '../../../../types/prompts'
 import { PrimaryButton } from '../elements/button'
 import { BodyLarge, BodyMedium, BodySmall } from '../elements/text'
 import { MarkdownPrompt } from './markdown_prompt'
+import useListUserDonations from '../hooks/useListUserDonations'
+import JSZip from 'jszip'
+import awsConfig from '../../../../../aws.config'
 
 type Props = Weak<PropsUIPromptFileInput> & ReactFactoryContext
+
+function useGetUserDonationAsZip(username: string | null, timestamp: string | null) {
+  const [zip, setZip] = React.useState<JSZip | null>(null)
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  if (!username || !timestamp) {
+    return { zip: null, isLoading: false }
+  }
+
+  // Find the user's donations
+  const { data } = useListUserDonations(username, timestamp)
+
+  React.useEffect(() => {
+    const downloadFiles = async () => {
+      const donation = data[0];
+      if (!donation) {
+        return null
+      }
+      const zip = new JSZip()
+      const downloadUrl = `${awsConfig["lambda-get-url"]}`;
+      const promises = donation.files.map((file) => {
+        return fetch(downloadUrl, {
+          method: "POST",
+          body: JSON.stringify({
+            bucket_name: awsConfig["s3-bucket-name"],
+            path: `${username}/${donation.timestamp}/${file.filename}`
+          })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const { url } = data;
+            // Get the file as a blob
+            return fetch(url)
+              .then((response) => response.blob())
+          })
+          .then((blob) => {
+            zip.file(file.filename, blob)
+          })
+      });
+      await Promise.all(promises)
+      return zip
+    };
+
+    console.log('[FileInput] Fetching user donation as zip from data', data)
+    setIsLoading(true)
+    downloadFiles().then((zip) => {
+      setZip(zip)
+      setIsLoading(false)
+    })
+  }, [data])
+
+  return { zip, isLoading }
+}
 
 export const FileInput = (props: Props): JSX.Element => {
   const [waiting, setWaiting] = React.useState<boolean>(false)
@@ -23,6 +78,28 @@ export const FileInput = (props: Props): JSX.Element => {
     input.current?.click()
   }
 
+  const urlParams = new URLSearchParams(window.location.search)
+  const username = urlParams.get('username')
+  const timestamp = urlParams.get('timestamp')
+  console.log(username, timestamp)
+  const { zip, isLoading } = useGetUserDonationAsZip(username, timestamp)
+
+  React.useEffect(() => {
+    async function zipAsFile() {
+      if (zip) {
+        console.log('[FileInput] Creating zip file from user donation', zip)
+        const content = await zip.generateAsync({ type: 'blob' })
+        if (!content) return
+        const zipFile = new File([content], `${timestamp}.zip`)
+        setSelectedFile(zipFile)
+        console.log('[FileInput] Created zip file: ', zipFile)
+        if (zipFile) resolve?.({ __type__: 'PayloadFile', value: zipFile })
+      }
+    }
+    setWaiting(true)
+    zipAsFile().then(() => setWaiting(false))
+  }, [zip, isLoading])
+
   function handleSelect(event: React.ChangeEvent<HTMLInputElement>): void {
     const files = event.target.files
     if (files != null && files.length > 0) {
@@ -35,6 +112,7 @@ export const FileInput = (props: Props): JSX.Element => {
   function handleConfirm(): void {
     if (selectedFile !== undefined && !waiting) {
       setWaiting(true)
+      console.log('[FileInput] Selected file: ', selectedFile)
       resolve?.({ __type__: 'PayloadFile', value: selectedFile })
     }
   }
