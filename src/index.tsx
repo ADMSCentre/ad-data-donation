@@ -2,8 +2,8 @@ import './fonts.css'
 import './framework/styles.css'
 import Assembly from './framework/assembly'
 import { Bridge } from './framework/types/modules'
-import LiveBridge from './live_bridge'
-import FakeBridge from './fake_bridge'
+// import LiveBridge from './live_bridge'
+// import FakeBridge from './fake_bridge'
 import AWSBridge from './aws_bridge'
 
 const rootElement = document.getElementById('root') as HTMLElement

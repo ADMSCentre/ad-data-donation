@@ -13,7 +13,7 @@ export interface VisualisationEngine {
 }
 
 export interface Bridge {
-  send: (command: CommandSystem) => void
+  send: (command: CommandSystem) => Promise<void>
   worker: Worker | undefined
   connectWorker: (worker: Worker) => void
 }

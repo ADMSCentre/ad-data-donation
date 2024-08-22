@@ -5,12 +5,12 @@ export default class CommandRouter implements CommandHandler {
   bridge: Bridge
   visualisationEngine: VisualisationEngine
 
-  constructor (bridge: Bridge, visualisationEngine: VisualisationEngine) {
+  constructor(bridge: Bridge, visualisationEngine: VisualisationEngine) {
     this.bridge = bridge
     this.visualisationEngine = visualisationEngine
   }
 
-  async onCommand (command: Command): Promise<Response> {
+  async onCommand(command: Command): Promise<Response> {
     return await new Promise<Response>((resolve, reject) => {
       if (isCommandSystem(command)) {
         this.onCommandSystem(command, resolve)
@@ -22,15 +22,16 @@ export default class CommandRouter implements CommandHandler {
     })
   }
 
-  onCommandSystem (command: CommandSystem, resolve: (response: Response) => void): void {
-    this.bridge.send(command)
-    resolve({ __type__: 'Response', command, payload: { __type__: 'PayloadVoid', value: undefined } })
+  onCommandSystem(command: CommandSystem, resolve: (response: Response) => void): void {
+    this.bridge.send(command).then(() => {
+      resolve({ __type__: 'Response', command, payload: { __type__: 'PayloadVoid', value: undefined } })
+    })
   }
 
-  onCommandUI (command: CommandUI, reject: (reason?: any) => void): void {
+  onCommandUI(command: CommandUI, reject: (reason?: any) => void): void {
     this.visualisationEngine.render(command).then(
       (response) => { reject(response) },
-      () => {}
+      () => { }
     )
   }
 }
