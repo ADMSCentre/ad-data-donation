@@ -21,7 +21,7 @@ const NavItem = ({ onClick, to, requiresLogin = false, children }:
 
   return (
     <a
-      className="text-text rounded px-2 py-1 font-semibold bg-opacity-0 bg-primarylight hover:bg-opacity-100 transition-all cursor-pointer"
+      className="text-text rounded px-2 py-1 font-semibold bg-opacity-0 bg-text hover:bg-opacity-100 transition-all cursor-pointer hover:text-primary"
       href={to}
       onClick={onClick}
     >

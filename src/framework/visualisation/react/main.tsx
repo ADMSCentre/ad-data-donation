@@ -40,12 +40,12 @@ const Login = () => {
         <input
           type="text"
           value={username}
-          className="border border-primary rounded px-2"
+          className="border border-primary rounded px-2 bg-behind"
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter UUID..."
         />
         <button
-          className="bg-primarylight bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0"
+          className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0 hover:text-primary transition-all"
           onClick={() => handleLogin(username)}
           disabled={!username}
         >
@@ -66,7 +66,7 @@ const Logout = () => {
         Logged in as <span className="font-semibold">{username}</span>
       </span>
       <button
-        className="bg-primarylight bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer"
+        className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer hover:text-primary transition-all"
         onClick={() => {
           handleLogout();
           // Clear query parameters
