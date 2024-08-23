@@ -1,4 +1,8 @@
-Please submit Facebook Ad Information package as a `.zip` file below. If this is your first time submitting a Facebook Ad Information package, please refer to the **Download Instructions** below (click to expand).
+Thank you for your interest in participating in this research project **Digital advertising and cultures of alcohol and gambling consumption on social media platforms**. The study is being conducted by researchers at [the University of Queensland](https://www.uq.edu.au/) and was funded by the [Foundation for Alcohol Research and Education Ltd](https://fare.org.au/). This study adheres to the Guidelines of the ethical review process of The University of Queensland and the National Statement on Ethical Conduct in Human Research (Ethics ID number: 2023/HE002131) and .
+
+As part of the study, we are asking you to download and donate your <a class="tooltip-text" data-tooltip-id="my-tooltip" data-tooltip-content="Ad preference data is the list of interests attached to your profile which enables advertisers to target you (e.g., cooking, football, craft beer). The list of advertisers reflects advertisers using your activities or information to reach you, such as interactions with the advertisers’ Facebook page or website">Meta ad preferences</a> and list of advertisers who use your data to target ads. Your ad preference data, in combination with the ads you collect on the Australian Mobile Ad Toolkit App, help us understand how digital advertising operates.
+
+Please submit Facebook Ad Information package as a `.zip` file below. Please refer to the **Download Instructions** below (click to expand).
 
 <details class='secondary'>
 <summary><strong>Download Instructions</strong></summary>
