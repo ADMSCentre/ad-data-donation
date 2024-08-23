@@ -40,8 +40,15 @@ function Logo() {
   return (
     <div className="h-20 sm:h-12 flex gap-2 items-center">
       {orgs.map((org, index) => (
-        <a key={index} href={org.url} target="_blank" rel="noreferrer" className="h-full">
-          <img src={org.logoUrl} alt={org.name} className="!m-0 bg-white object-contain max-h-full" />
+        <a key={index} href={org.url}
+          target="_blank"
+          rel="noreferrer"
+          className="h-full p-[1px] border-primary border-opacity-0 border-2 hover:border-opacity-100 transition-all"
+        >
+          <img
+            src={org.logoUrl} alt={org.name}
+            className="!m-0 bg-white object-contain max-h-full"
+          />
         </a>
       ))}
     </div>
@@ -54,7 +61,7 @@ const Standalone = ({ elements }: MainProps): JSX.Element => {
   return (
     <>
       <div className="flex flex-col w-full h-full">
-        <header className="sm:sticky top-0 z-[999] flex-col flex md:flex-row justify-between sm:items-center h-full border-b-2 shadow border-primary p-2 bg-primary gap-2">
+        <header className="sm:sticky top-0 z-[999] flex-col flex md:flex-row justify-between sm:items-center h-full  shadow border-primary p-2 bg-primary gap-2 backdrop-blur bg-opacity-50">
           <div className="flex gap-2 items-center flex-col sm:flex-row">
             <Logo />
           </div>
