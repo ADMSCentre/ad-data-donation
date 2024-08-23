@@ -78,7 +78,7 @@ function DonationPackage({ donation }: {
   }, [donation.files, donation.timestamp, username]);
 
   return (
-    <div className="w-80 border-l-4 border-primary p-4 flex flex-col justify-between shadow hover:shadow-lg transition-all bg-primarylight bg-opacity-10 hover:bg-opacity-100">
+    <div className="w-80 border-l-4 border-primary p-4 flex flex-col justify-between shadow hover:shadow-lg transition-all bg-primarylight bg-opacity-5 hover:bg-opacity-100">
       <div>
         <div className="flex gap-4 items-center justify-between">
           <div className="font-semibold">{donation.date}</div>

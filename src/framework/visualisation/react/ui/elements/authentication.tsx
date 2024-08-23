@@ -1,6 +1,5 @@
 import React from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Tooltip } from "react-tooltip";
 import { BsQuestionCircle } from "react-icons/bs";
 
 export const Login = () => {
@@ -11,9 +10,6 @@ export const Login = () => {
 
   return (
     <>
-      <Tooltip id="my-tooltip" style={{
-        maxWidth: "500px",
-      }} />
       <div className="flex flex-row items-center gap-2">
         <BsQuestionCircle
           className="text-text"

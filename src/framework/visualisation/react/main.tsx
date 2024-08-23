@@ -52,21 +52,27 @@ const Standalone = ({ elements }: MainProps): JSX.Element => {
   const { isAuthenticated } = React.useContext(AuthContext);
 
   return (
-    <div className="flex flex-col w-full h-full">
-      <header className="sm:sticky top-0 z-[999] flex-col flex md:flex-row justify-between sm:items-center h-full border-b-2 shadow border-primary p-2 bg-primary gap-2">
-        <div className="flex gap-2 items-center flex-col sm:flex-row">
-          <Logo />
+    <>
+      <div className="flex flex-col w-full h-full">
+        <header className="sm:sticky top-0 z-[999] flex-col flex md:flex-row justify-between sm:items-center h-full border-b-2 shadow border-primary p-2 bg-primary gap-2">
+          <div className="flex gap-2 items-center flex-col sm:flex-row">
+            <Logo />
+          </div>
+          <div className="flex justify-between flex-1 w-full">
+            <NavBar />
+            {isAuthenticated
+              ? <Logout />
+              : <Login />}
+          </div>
+        </header>
+        <div className="p-4 sm:p-8 md:p-12 flex justify-center w-full h-full">
+          <div>{elements}</div>
         </div>
-        <div className="flex justify-between flex-1 w-full">
-          <NavBar />
-          {isAuthenticated
-            ? <Logout />
-            : <Login />}
-        </div>
-      </header>
-      <div className="p-4 sm:p-8 md:p-12 flex justify-center w-full h-full">
-        <div>{elements}</div>
       </div>
-    </div>
+      <Tooltip id="my-tooltip" style={{
+        maxWidth: "500px",
+        zIndex: "1000"
+      }} />
+    </>
   );
 };

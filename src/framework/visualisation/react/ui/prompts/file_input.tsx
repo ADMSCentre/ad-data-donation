@@ -132,7 +132,7 @@ export const FileInput = (props: Props): JSX.Element => {
         {
           !auth.isAuthenticated
             ? (
-              <div className='border-l-4 border-primary bg-primary bg-opacity-10 text-lg p-4 flex font-semibold gap-4 flex-col'>
+              <div className='border-l-4 border-primary bg-primary bg-opacity-5 text-lg p-4 flex font-semibold gap-4 flex-col'>
                 <div className='flex flex-row gap-2'>
                   <BsExclamationDiamond className='text-primary' size={32} />
                   Before you can continue, please log in with your Unique User ID (UUID) below.

@@ -56,7 +56,7 @@ h2 {
   @apply text-2xl font-bold;
 }
 details.secondary {
-  @apply bg-secondary p-2 pl-4 bg-opacity-10 border-l-4 border-secondary;
+  @apply bg-secondary p-2 pl-4 bg-opacity-5 border-l-4 border-secondary;
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -66,4 +66,15 @@ details.secondary {
 .loader {
   /* border-left-color: #3498db; */
   @apply border-l-primary animate-spin;
+}
+
+.tooltip-text {
+  /* Indicate a text that has an associated tooltip, with a question mark next to it */
+  @apply inline-block rounded underline decoration-dashed cursor-help bg-primary bg-opacity-0 hover:bg-opacity-25 transition-all; 
+}
+
+.tooltip-text::after {
+  /* The question mark on the top right of the text */
+  content: '?';
+  @apply ml-[2px] inline-flex text-xs justify-center font-bold no-underline decoration-transparent align-super;
 }
