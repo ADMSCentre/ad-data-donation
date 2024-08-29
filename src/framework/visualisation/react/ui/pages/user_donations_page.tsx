@@ -6,7 +6,7 @@ import awsConfig from "../../../../../aws.config";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { BsClipboardData, BsDownload, BsViewList } from "react-icons/bs"
-import { BarLoader } from "react-spinners";
+import { BarLoader, ClimbingBoxLoader } from "react-spinners";
 import JSZip from "jszip";
 import useListUserDonations from "../hooks/useListUserDonations";
 import withDarkModeLoader from "../elements/loader_wrapper";
@@ -22,6 +22,7 @@ interface Donation {
 }
 
 const ThemedBarLoader = withDarkModeLoader(BarLoader);
+const ThemedClimbinbBoxLoader = withDarkModeLoader(ClimbingBoxLoader);
 
 function DonationPackage({ donation }: {
   donation: Donation;
@@ -139,7 +140,10 @@ const UserDonationsPage = () => {
     <div className="flex flex-col items-center">
       <h1>Your Donations</h1>
       {isLoading ? (
-        <p>Loading...</p>
+        <div className="flex flex-col justify-center items-center h-96 gap-8">
+          <ThemedClimbinbBoxLoader size={40} />
+          <p className="text-text text-2xl">Loading your donations...</p>
+        </div>
       ) : (
         <div className="flex flex-wrap gap-4 max-w-3/4 justify-center">
           {donations && donations.length > 0 ? (
