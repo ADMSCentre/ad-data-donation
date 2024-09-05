@@ -14,8 +14,11 @@ import awsConfig from '../../../../../aws.config'
 import { AuthContext } from '../../contexts/AuthContext'
 import { Login } from '../elements/authentication'
 import { BsExclamationDiamond } from 'react-icons/bs'
+import { MoonLoader } from 'react-spinners'
+import withDarkModeLoader from '../elements/loader_wrapper'
 
 type Props = Weak<PropsUIPromptFileInput> & ReactFactoryContext
+const ThemedMoonLoader = withDarkModeLoader(MoonLoader)
 
 function useGetUserDonationAsZip(username: string | null, timestamp: string | null) {
   const [zip, setZip] = React.useState<JSZip | null>(null)
@@ -86,6 +89,7 @@ export const FileInput = (props: Props): JSX.Element => {
 
   const username = urlParams.get('username')
   const timestamp = urlParams.get('timestamp')
+  const isReviewing = urlParams.has('review')
   console.log(username, timestamp)
   const { zip, isLoading } = useGetUserDonationAsZip(username, timestamp)
 
@@ -121,6 +125,18 @@ export const FileInput = (props: Props): JSX.Element => {
       console.log('[FileInput] Selected file: ', selectedFile)
       resolve?.({ __type__: 'PayloadFile', value: selectedFile })
     }
+  }
+
+  // If reviewing, shows a loading spinner
+  if (isReviewing) {
+    return (
+      <div className='flex flex-col gap-8 justify-center items-center'>
+        <ThemedMoonLoader size={40} />
+        <span className='text-lg text-grey1'>
+          Please wait as we prepare your files for viewing...
+        </span>
+      </div>
+    )
   }
 
   return (

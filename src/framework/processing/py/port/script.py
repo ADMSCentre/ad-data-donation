@@ -158,9 +158,7 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
     
     visualisations = [
         [],
-        [
-            wordcloud
-        ],
+        [],
         []
     ] 
 

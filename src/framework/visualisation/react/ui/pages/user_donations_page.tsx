@@ -22,7 +22,7 @@ interface Donation {
 }
 
 const ThemedBarLoader = withDarkModeLoader(BarLoader);
-const ThemedClimbinbBoxLoader = withDarkModeLoader(ClimbingBoxLoader);
+const ThemedClimbingBoxLoader = withDarkModeLoader(ClimbingBoxLoader);
 
 function DonationPackage({ donation }: {
   donation: Donation;
@@ -141,7 +141,7 @@ const UserDonationsPage = () => {
       <h1>Your Donations</h1>
       {isLoading ? (
         <div className="flex flex-col justify-center items-center h-96 gap-8">
-          <ThemedClimbinbBoxLoader size={40} />
+          <ThemedClimbingBoxLoader size={40} />
           <p className="text-text text-2xl">Loading your donations...</p>
         </div>
       ) : (
