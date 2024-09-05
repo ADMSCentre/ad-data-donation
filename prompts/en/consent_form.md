@@ -1,23 +1,24 @@
-## Consent Form for Data Submission
+## Consent Form for Data Donation
 
-Thank you for participating in our study. Below, you will find metadata about the contents of the zip file you submitted. Please review the data carefully and remove any information you do not wish to share.
+Thank you for participating in our study `"Digital advertising and cultures of alcohol and gambling consumption on social media platforms"`.
 
-**Review and Consent:**
+### Participation
 
-1. **Review Data:**
-   - Carefully examine the metadata provided.
-   - Remove any information you do not wish to share.
+Participation is voluntary. If you do not wish to take part, you do not have to. If you choose to stop participating, you do not need to provide any explanation.
 
-2. **Consent to Share:**
-   - If you agree to share this data for research purposes, please click the **Yes, share for research** button at the bottom of this page.
+### Purpose of Data Donation
 
-**Purpose of Data Sharing:**
-By sharing this data, you contribute to research aimed at [insert short explanation about your research here].
+By donating this data, you contribute to research aimed at understanding digital advertising that is otherwise invisible.
 
-**Your Rights:**
-- Participation is voluntary.
-- You can withdraw your consent at any time before the data is used in the study.
+### Review and Consent
 
-**Contact Information:**
-If you have any questions or concerns, please contact us at [insert contact information here].
+1. **Review Data**:
 
+- Please review the data you have donated carefully.
+- **Remove** any files that you do not wish to donate from the first table below. Remaining files will be donated for the research.
+
+2. **Consent to donate**:
+
+- If you agree to donate this data for research purposes, please click the **I consent to donate button** at the bottom of this page.
+
+**Contact Information**: If you have any questions or concerns, please contact [Associate Professor Nic Carah](https://communication-arts.uq.edu.au/profile/363/nicholas-carah), [n.carah@uq.edu.au](mailto:n.carah@uq.edu.au).
