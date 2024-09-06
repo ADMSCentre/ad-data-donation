@@ -15,13 +15,6 @@ export const Main = ({ elements }: MainProps): JSX.Element => {
     return { ...element, key: `${index}` };
   });
 
-  React.useEffect(() => {
-    mediumZoom(document.querySelectorAll('.zoomable img'), {
-      margin: 24,
-      background: 'rgba(0, 0, 0, 0.9)',
-    });
-  }, []);
-
   return (
     <AuthProvider>
       {<Standalone elements={elements} />}
@@ -65,6 +58,13 @@ function Logo() {
 
 const Standalone = ({ elements }: MainProps): JSX.Element => {
   const { isAuthenticated } = React.useContext(AuthContext);
+  React.useEffect(() => {
+    console.log('[Main] Applying mediumZoom to all images')
+    mediumZoom(document.querySelectorAll('.zoomable img'), {
+      margin: 24,
+      background: 'rgba(0, 0, 0, 0.9)',
+    });
+  }, [elements]);
 
   return (
     <>
