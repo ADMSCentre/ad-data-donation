@@ -12,4 +12,4 @@ Unfortunately, we cannot process your Meta Ad Information Data Donation file. It
 - **Continue** if you are sure that you selected the right file.
 - **Try Again** to select a different file.
 
-If you continue to experience issues, please contact our support team for assistance.
+If you continue to experience issues, please contact Associate Professor Nic Carah at [n.carah@uq.edu.au](mailto:n.carah@uq.edu.au) or our support research team for assistance.

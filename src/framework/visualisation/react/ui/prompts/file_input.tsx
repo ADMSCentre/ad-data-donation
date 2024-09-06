@@ -16,6 +16,7 @@ import { Login } from '../elements/authentication'
 import { BsExclamationDiamond } from 'react-icons/bs'
 import { MoonLoader } from 'react-spinners'
 import withDarkModeLoader from '../elements/loader_wrapper'
+import mediumZoom from 'medium-zoom'
 
 type Props = Weak<PropsUIPromptFileInput> & ReactFactoryContext
 const ThemedMoonLoader = withDarkModeLoader(MoonLoader)
@@ -90,7 +91,6 @@ export const FileInput = (props: Props): JSX.Element => {
   const username = urlParams.get('username')
   const timestamp = urlParams.get('timestamp')
   const isReviewing = urlParams.has('review')
-  console.log(username, timestamp)
   const { zip, isLoading } = useGetUserDonationAsZip(username, timestamp)
 
   React.useEffect(() => {

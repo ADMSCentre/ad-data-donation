@@ -4,6 +4,7 @@ import { BsQuestionCircle } from "react-icons/bs"
 import { Tooltip } from 'react-tooltip'
 import NavBar from "./ui/elements/navbar";
 import { Login, Logout } from "./ui/elements/authentication";
+import mediumZoom from 'medium-zoom'
 
 interface MainProps {
   elements: JSX.Element[];
@@ -13,6 +14,13 @@ export const Main = ({ elements }: MainProps): JSX.Element => {
   elements = elements.map((element, index) => {
     return { ...element, key: `${index}` };
   });
+
+  React.useEffect(() => {
+    mediumZoom(document.querySelectorAll('.zoomable img'), {
+      margin: 24,
+      background: 'rgba(0, 0, 0, 0.9)',
+    });
+  }, []);
 
   return (
     <AuthProvider>
@@ -61,7 +69,7 @@ const Standalone = ({ elements }: MainProps): JSX.Element => {
   return (
     <>
       <div className="flex flex-col w-full h-full">
-        <header className="sm:sticky top-0 z-[999] flex-col flex md:flex-row justify-between sm:items-center h-full  shadow border-primary p-2 bg-primary gap-2 backdrop-blur bg-opacity-50">
+        <header className="sm:sticky top-0 z-[999] flex-col flex md:flex-row justify-between sm:items-center h-full border-primary p-2 bg-primary gap-2">
           <div className="flex gap-2 items-center flex-col sm:flex-row">
             <Logo />
           </div>
