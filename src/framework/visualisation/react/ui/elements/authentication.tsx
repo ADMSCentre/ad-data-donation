@@ -2,6 +2,12 @@ import React from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { BsQuestionCircle } from "react-icons/bs";
 
+const NUM_DIGITS = 8;
+
+function validateLogin(username: string): boolean {
+  return username.length === NUM_DIGITS && !isNaN(Number(username));
+}
+
 export const Login = () => {
   // Login and store username in local storage
   const [username, setUsername] = React.useState("");
@@ -14,19 +20,21 @@ export const Login = () => {
         <BsQuestionCircle
           className="text-text"
           data-tooltip-id="my-tooltip"
-          data-tooltip-content="The Unique User ID (UUID) is unique to each user and is used to identify you in the system without revealing your identity. Logging in allows you to access your donation history."
+          data-tooltip-content="The activation code is used to identify you in the system without revealing your identity."
         />
         <input
           type="text"
           value={username}
-          className="border border-primary rounded px-2 bg-behind"
+          className="ring-primary rounded px-2 bg-behind w-80 text-md valid:ring-green-500 transition-all ring-2 focus:outline-none"
+          required
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter UUID..."
+          placeholder={`First ${NUM_DIGITS} characters of activation code`}
+          pattern={`[0-9]{${NUM_DIGITS}}`}
         />
         <button
-          className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0 hover:text-primary transition-all"
+          className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0 hover:text-primary transition-all disabled:hover:text-text"
           onClick={() => handleLogin(username)}
-          disabled={!username}
+          disabled={!validateLogin(username)}
         >
           Login
         </button>

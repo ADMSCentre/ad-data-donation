@@ -148,10 +148,15 @@ export const FileInput = (props: Props): JSX.Element => {
         {
           !auth.isAuthenticated
             ? (
-              <div className='border-l-4 border-primary bg-primary bg-opacity-5 text-lg p-4 flex font-semibold gap-4 flex-col'>
+              <div className='border-l-4 border-primary bg-primary bg-opacity-5 text-lg p-4 flex font gap-4 flex-col'>
                 <div className='flex flex-row gap-2'>
                   <BsExclamationDiamond className='text-primary' size={32} />
-                  Before you can continue, please log in with your Unique User ID (UUID) below.
+                  <div className='zoomable flex flex-col gap-2 items-center'>
+                    <div>
+                      Before you can continue, please log in with the first 8 characters of your activation code. The code can be found under <strong className="text-primary">My Personal Dashboard</strong> in the Australian Mobile Ad Toolkit mobile app.
+                    </div>
+                    <img src="images/activation_code.png" alt="Activation code location" className='w-1/2 !m-0' />
+                  </div>
                 </div>
                 <div className='flex w-full justify-center'>
                   <Login />
