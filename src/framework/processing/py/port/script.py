@@ -10,7 +10,6 @@ import os
 
 patterns = [
     '.*ad_preferences.json', 
-    ".*advertisers_you've_interacted_with.json", 
     ".*advertisers_using_your_activity_or_information.json"
 ]
 
