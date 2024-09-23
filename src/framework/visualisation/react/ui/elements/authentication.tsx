@@ -5,7 +5,7 @@ import { BsQuestionCircle } from "react-icons/bs";
 const NUM_DIGITS = 8;
 
 function validateLogin(username: string): boolean {
-  return username.length === NUM_DIGITS && !isNaN(Number(username));
+  return username.length === NUM_DIGITS && /^[0-9a-zA-Z]+$/.test(username);
 }
 
 export const Login = () => {
@@ -29,7 +29,7 @@ export const Login = () => {
           required
           onChange={(e) => setUsername(e.target.value)}
           placeholder={`First ${NUM_DIGITS} characters of activation code`}
-          pattern={`[0-9]{${NUM_DIGITS}}`}
+          pattern={`[0-9a-zA-Z]{${NUM_DIGITS}}`}
         />
         <button
           className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0 hover:text-primary transition-all disabled:hover:text-text"
