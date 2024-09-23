@@ -20,14 +20,14 @@ export const Login = () => {
         <BsQuestionCircle
           className="text-text"
           data-tooltip-id="my-tooltip"
-          data-tooltip-content="The activation code is used to identify you in the system without revealing your identity."
+          data-tooltip-content="The activation code is used to identify you in the system without revealing your identity. It is the first 8 characters of the code you received in the Australian Mobile Ad Toolkit mobile app."
         />
         <input
           type="text"
           value={username}
           className="ring-primary rounded px-2 bg-behind w-80 text-md valid:ring-green-500 transition-all ring-2 focus:outline-none"
           required
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value.toLowerCase())}
           placeholder={`First ${NUM_DIGITS} characters of activation code`}
           pattern={`[0-9a-zA-Z]{${NUM_DIGITS}}`}
         />
