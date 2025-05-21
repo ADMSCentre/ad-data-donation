@@ -2,10 +2,11 @@ import React from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { BsQuestionCircle } from "react-icons/bs";
 
-const NUM_DIGITS = 8;
+const NUM_DIGITS = [6,8]; // 6 or 8 characters
 
 function validateLogin(username: string): boolean {
-  return username.length === NUM_DIGITS && /^[0-9a-zA-Z]+$/.test(username);
+  return (username.length === NUM_DIGITS[0] || username.length === NUM_DIGITS[1]) && /^[0-9a-zA-Z]+$/.test(username);
+  // return username.length === NUM_DIGITS && /^[0-9a-zA-Z]+$/.test(username);
 }
 
 export const Login = () => {
@@ -28,8 +29,8 @@ export const Login = () => {
           className="ring-primary rounded px-2 bg-behind w-80 text-md valid:ring-green-500 transition-all ring-2 focus:outline-none"
           required
           onChange={(e) => setUsername(e.target.value.toLowerCase())}
-          placeholder={`First ${NUM_DIGITS} characters of activation code`}
-          pattern={`[0-9a-zA-Z]{${NUM_DIGITS}}`}
+          placeholder={`Activation code`}
+          pattern={`[0-9a-zA-Z]{${NUM_DIGITS[0]}|${NUM_DIGITS[1]}}`}
         />
         <button
           className="bg-text bg-opacity-0 hover:bg-opacity-100 text-text rounded px-2 font-semibold border border-text cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-opacity-0 hover:text-primary transition-all disabled:hover:text-text"
