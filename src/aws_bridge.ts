@@ -1,4 +1,4 @@
-import { CommandSystem, CommandSystemDonate, CommandSystemDonateFiles, CommandSystemExit, isCommandSystemDonate, isCommandSystemDonateFiles, isCommandSystemExit } from './framework/types/commands'
+import { CommandSystem, CommandSystemDonate, CommandSystemDonateFiles, CommandSystemExit, isCommandSystemDonate, isCommandSystemDonateFiles, isCommandSystemExit, isCommandSystemRestart } from './framework/types/commands'
 import { Bridge } from './framework/types/modules'
 import config from './aws.config.js'
 
@@ -8,25 +8,36 @@ declare global {
 
 export default class AWSBridge implements Bridge {
   worker: Worker | undefined
-  
-  connectWorker (worker: Worker): void {
+
+  connectWorker(worker: Worker): void {
     this.worker = worker
   }
 
-  async send (command: CommandSystem): Promise<void> {
+  async send(command: CommandSystem): Promise<void> {
     if (isCommandSystemDonate(command)) {
-      this.handleDonation(command)
-    } else if (isCommandSystemDonateFiles(command)) {
-      await this.handleFilesDonation(command)
+      return this.handleDonation(command)
     }
-    else if (isCommandSystemExit(command)) {
-      this.handleExit(command)
-    } else {
-      console.log('[AWSBridge] received unknown command: ' + JSON.stringify(command))
+    if (isCommandSystemDonateFiles(command)) {
+      return await this.handleFilesDonation(command)
     }
+    if (isCommandSystemExit(command)) {
+      return this.handleExit(command)
+    }
+    if (isCommandSystemRestart(command)) {
+      console.log(`[AWSBridge] received restart command: ${command.target}`)
+      let { target } = command;
+      // If the target is __current__, reload the page with all query parameters
+      if (target === '__current__') {
+        target = window.location.href;
+      }
+      console.log(`[AWSBridge] restart redirecting to: ${target}`)
+      window.location.href = target;
+      return;
+    }
+    console.log('[AWSBridge] received unknown command: ' + JSON.stringify(command))
   }
 
-  handleDonation (command: CommandSystemDonate): void {
+  handleDonation(command: CommandSystemDonate): void {
     console.log(`[AWSBridge] received donation: ${command.key}=${command.json_string}`)
     console.log(`[AWSBridge] sending donation to AWS: ${config['lambda-put-url']}`)
 
@@ -37,7 +48,7 @@ export default class AWSBridge implements Bridge {
     }
   }
 
-  async handleFilesDonation (command: CommandSystemDonateFiles): Promise<void> {
+  async handleFilesDonation(command: CommandSystemDonateFiles): Promise<void> {
     console.log(`[AWSBridge] received files donation: ${command.key}=${command.fileContents}`)
     console.log(`[AWSBridge] sending files donation to AWS: ${config['lambda-put-url']}`)
 
@@ -85,7 +96,7 @@ export default class AWSBridge implements Bridge {
     await Promise.all(putObjectPromises)
   }
 
-  handleExit (command: CommandSystemExit): void {
+  handleExit(command: CommandSystemExit): void {
     console.log(`[AWSBridge] received exit: ${command.code}=${command.info}`)
   }
 }

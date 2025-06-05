@@ -6,6 +6,7 @@ import VisualisationFactory from './factory'
 import { Main } from './main'
 import LoadingPage from './ui/pages/loading_page'
 import UserDonationsPage from './ui/pages/user_donations_page'
+import SelectPlatformPage from './ui/pages/select_platform_page'
 
 
 export default class ReactEngine implements VisualisationEngine {
@@ -26,6 +27,14 @@ export default class ReactEngine implements VisualisationEngine {
       this.root.render(<Main elements={[<UserDonationsPage />]} />)
       return
     }
+    // If no platform is specified, default to a selection of platforms page
+    // from the query parameters
+    const platform = new URLSearchParams(window.location.search).get('platform')
+    if (platform === null || platform === '') {
+      this.root.render(<Main elements={[<SelectPlatformPage />]} />)
+      return
+    }
+
     this.root.render(<Main elements={[<LoadingPage />]} />)
     this.locale = locale
   }

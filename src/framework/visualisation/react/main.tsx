@@ -5,6 +5,7 @@ import { Tooltip } from 'react-tooltip'
 import NavBar from "./ui/elements/navbar";
 import { Login, Logout } from "./ui/elements/authentication";
 import mediumZoom from 'medium-zoom'
+import { ParamsProvider } from "./contexts/ParamsContext";
 
 interface MainProps {
   elements: JSX.Element[];
@@ -16,9 +17,11 @@ export const Main = ({ elements }: MainProps): JSX.Element => {
   });
 
   return (
-    <AuthProvider>
-      {<Standalone elements={elements} />}
-    </AuthProvider>
+    <ParamsProvider>
+      <AuthProvider>
+        {<Standalone elements={elements} />}
+      </AuthProvider>
+    </ParamsProvider>
   );
 };
 

@@ -12,7 +12,9 @@ onmessage = (event) => {
       break
 
     case 'firstRunCycle':
-      pyScript = self.pyodide.runPython(`port.start(${event.data.sessionId})`)
+      const config = event.data.config || {};
+      const configStr = JSON.stringify(config)
+      pyScript = self.pyodide.runPython(`port.start(${event.data.sessionId}, ${configStr})`)
       runCycle(null)
       break
 

@@ -10,7 +10,7 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
   resolveInitialized!: () => void
   resolveContinue!: () => void
 
-  constructor (sessionId: string, worker: Worker, commandHandler: CommandHandler) {
+  constructor(sessionId: string, worker: Worker, commandHandler: CommandHandler) {
     this.sessionId = sessionId
     this.commandHandler = commandHandler
     this.worker = worker
@@ -24,15 +24,15 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
     }
   }
 
-  sendSystemEvent (name: string): void {
+  sendSystemEvent(name: string): void {
     const command: CommandSystemEvent = { __type__: 'CommandSystemEvent', name }
     this.commandHandler.onCommand(command).then(
-      () => {},
-      () => {}
+      () => { },
+      () => { }
     )
   }
 
-  handleEvent (event: any): void {
+  handleEvent(event: any): void {
     const { eventType } = event.data
     console.log('[ReactEngine] received eventType: ', eventType)
     switch (eventType) {
@@ -58,13 +58,19 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
     }
   }
 
-  start (): void {
+  start(): void {
     // If the url is not base url, do not start the engine
     if (window.location.hash !== '') {
-      console.log('[WorkerProcessingEngine] skipped Python worker start')
+      console.log('[WorkerProcessingEngine] not donating, skipped Python worker start')
       return
     }
-    
+    // If no platform is specified, do not start the engine
+    const platform = new URLSearchParams(window.location.search).get('platform')
+    if (platform === null || platform === '') {
+      console.log('[WorkerProcessingEngine] no platform, skipped Python worker start')
+      return
+    }
+
     console.log('[WorkerProcessingEngine] started')
     const waitForInitialization: Promise<void> = this.waitForInitialization()
 
@@ -73,11 +79,11 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
         this.sendSystemEvent('initialized')
         this.firstRunCycle()
       },
-      () => {}
+      () => { }
     )
   }
 
-  async waitForInitialization (): Promise<void> {
+  async waitForInitialization(): Promise<void> {
     return await new Promise<void>((resolve) => {
       this.resolveInitialized = resolve
       const env = {
@@ -91,23 +97,29 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
     })
   }
 
-  firstRunCycle (): void {
-    this.worker.postMessage({ eventType: 'firstRunCycle', sessionId: this.sessionId })
+  firstRunCycle(): void {
+    // Any configurations that need to be passed to the Python worker.
+    // This will be available as the `config` parameter in scripts.py > process
+    const config = {
+      platform: new URLSearchParams(window.location.search).get('platform') || '',
+    }
+
+    this.worker.postMessage({ eventType: 'firstRunCycle', sessionId: this.sessionId, config })
   }
 
-  nextRunCycle (response: Response): void {
+  nextRunCycle(response: Response): void {
     this.worker.postMessage({ eventType: 'nextRunCycle', response })
   }
 
-  terminate (): void {
+  terminate(): void {
     this.worker.terminate()
   }
 
-  handleRunCycle (command: any): void {
+  handleRunCycle(command: any): void {
     if (isCommand(command)) {
       this.commandHandler.onCommand(command).then(
         (response) => this.nextRunCycle(response),
-        () => {}
+        () => { }
       )
     }
   }

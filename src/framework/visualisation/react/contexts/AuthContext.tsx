@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useEffect } from "react";
+import { useParamsContext } from "./ParamsContext";
 
 export const AuthContext = createContext({
   isAuthenticated: false,
@@ -13,6 +14,7 @@ const AuthProvider = ({ children }: {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [username, setUsername] = React.useState("");
 
+  const { username: usernameParam } = useParamsContext();
 
   const handleLogin = useCallback((username: string) => {
     if (!username) return;
@@ -29,12 +31,8 @@ const AuthProvider = ({ children }: {
 
   useEffect(() => {
     // Try to get the username from query parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const usernameFromParams = urlParams.get("username");
-    if (usernameFromParams) {
-      handleLogin(usernameFromParams);
-      // Clear the query parameters
-      window.history.replaceState({}, document.title, window.location.pathname);
+    if (usernameParam) {
+      handleLogin(usernameParam);
       return;
     }
 
@@ -48,7 +46,7 @@ const AuthProvider = ({ children }: {
       setIsAuthenticated(false);
       setUsername("");
     }
-  }, [handleLogin]);
+  }, [handleLogin, usernameParam]);
 
   return (
     <AuthContext.Provider value={{ username, isAuthenticated, handleLogin, handleLogout }}>

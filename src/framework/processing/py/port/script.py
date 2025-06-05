@@ -1,5 +1,5 @@
 import port.api.props as props
-from port.api.commands import (CommandSystemDonate, CommandUIRender, CommandSystemExit, CommandSystemDonateFiles)
+from port.api.commands import (CommandSystemDonate, CommandSystemRestart, CommandUIRender, CommandSystemExit, CommandSystemDonateFiles)
 from pyodide.http import open_url
 
 import pandas as pd
@@ -100,6 +100,11 @@ def render_page(platform: str, body):
     page = props.PropsUIPageDonation(platform, header, body, footer)
     return CommandUIRender(page)
 
+def restart_system(target="__current__"):
+    """
+    Restarts the system
+    """
+    return CommandSystemRestart(target)
 
 def generate_retry_prompt(platform: str) -> props.PropsUIPromptConfirm:
     text = get_translatable_prompt("retry.md")
@@ -113,13 +118,37 @@ def generate_retry_prompt(platform: str) -> props.PropsUIPromptConfirm:
     })
     return props.PropsUIPromptConfirm(text, ok, cancel)
 
+def generate_unimplemented_prompt(platform: str) -> props.PropsUIPromptConfirm:
+    text = props.Translatable({
+        "en": f"The {platform} flow is not implemented yet, but we are working on it!",
+        "nl": f"De {platform} flow is nog niet geïmplementeerd, maar we werken eraan!"
+    })
+    ok = props.Translatable({
+        "en": "Choose another platform",
+        "nl": "Kies een ander platform"
+    })
+    cancel = props.Translatable({
+        "en": "Exit",
+        "nl": "Afsluiten"
+    })
+    return props.PropsUIPromptConfirm(text, ok, cancel)
+
+def generate_unknown_platform_prompt(platform) -> props.PropsUIPromptConfirm:
+    text = props.Translatable({
+        "en": f"The '{platform}' platform is not supported.",
+        "nl": f"Het '{platform}' platform is niet herkend."
+    })
+    ok = props.Translatable({
+        "en": "Choose another platform",
+        "nl": "Kies een ander platform"
+    })
+    cancel = props.Translatable({
+        "en": "Exit",
+        "nl": "Afsluiten"
+    })
+    return props.PropsUIPromptConfirm(text, ok, cancel)
 
 def generate_file_prompt(description_public_path, extensions) -> props.PropsUIPromptFileInput:
-    # description = props.Translatable({
-    #     "en": f"Please follow the **download instructions** and choose the file that you stored on your device. Click “Skip” at the right bottom, if you do not have a {platform} file. ",
-    #     "nl": f"Volg de download instructies en kies het bestand dat u opgeslagen heeft op uw apparaat. Als u geen {platform} bestand heeft klik dan op “Overslaan” rechts onder."
-    # })
-    # Load description from public folder
     description = get_translatable_prompt(description_public_path)
     return props.PropsUIPromptFileInput(description, extensions)
 
@@ -286,72 +315,105 @@ def get_file_contents(zip_file: str, filenames: list[str]):
         return False
     return out
 
-def process(session_id: str):
-    platform = "Meta Ad Information Data Donation"
+def facebook_flow(session_id: str, config: dict):
+    title = "Facebook Ad Information Donation"
+    
+    # Ask the participant to submit a file
+    file_prompt = generate_file_prompt("file_upload_prompt.md", "application/zip, text/plain")
+    file_prompt_result = yield render_page(title, file_prompt)
+    
+    # If the participant submitted a file: continue
+    if file_prompt_result.__type__ == 'PayloadString':
 
-    # Start of the data donation flow
-    while True:
-        # Ask the participant to submit a file
-        file_prompt = generate_file_prompt("file_upload_prompt.md", "application/zip, text/plain")
-        file_prompt_result = yield render_page(platform, file_prompt)
+        # Validate the file the participant submitted
+        # In general this is wise to do
+        zip_file = file_prompt_result.value
+        is_data_valid = validate_the_participants_input(zip_file)
 
-        # If the participant submitted a file: continue
-        if file_prompt_result.__type__ == 'PayloadString':
+        # Happy flow:
+        # The file the participant submitted is valid
+        if is_data_valid == True:
 
-            # Validate the file the participant submitted
-            # In general this is wise to do
-            zip_file = file_prompt_result.value
-            is_data_valid = validate_the_participants_input(zip_file)
+            # Extract the data you as a researcher are interested in, and put it in a pandas DataFrame
+            # Show this data to the participant in a table on screen
+            # The participant can now decide to donate
+            files_metadata = extract_files_metadata(zip_file)
+            ad_preferences = tabulate_ad_preferences(zip_file)
+            advertisers = extract_advertisers(zip_file)
+            # consent_prompt = generate_consent_prompt(extracted_data_statistics, extracted_advertisers)
+            consent_prompt = generate_consent_prompt(files_metadata, ad_preferences, advertisers)
+            consent_prompt_result = yield render_page(title, consent_prompt)
 
-            # Happy flow:
-            # The file the participant submitted is valid
-            if is_data_valid == True:
+            # If the participant wants to donate the data gets donated
+            if consent_prompt_result.__type__ == "PayloadJSON":
+                print('consent_prompt_result')
+                print(consent_prompt_result.value)
+                # Convert value to a dictionary
+                result_value = json.loads(consent_prompt_result.value)
+                print(result_value)
+                print(result_value[0])
+                print(result_value[0]['zip_contents_0'])
+                submitted_files = result_value[0]['zip_contents_0']
+                filenames = [file['File name'] for file in submitted_files]
+                # Extract the zip and save the files into an "file-output" folder
+                blobs = get_file_contents(zip_file, filenames)
+                yield donate_files(f"{session_id}", blobs)
+                # yield donate(f"{session_id}-{platform}", consent_prompt_result.value)
 
-                # Extract the data you as a researcher are interested in, and put it in a pandas DataFrame
-                # Show this data to the participant in a table on screen
-                # The participant can now decide to donate
-                files_metadata = extract_files_metadata(zip_file)
-                ad_preferences = tabulate_ad_preferences(zip_file)
-                advertisers = extract_advertisers(zip_file)
-                # consent_prompt = generate_consent_prompt(extracted_data_statistics, extracted_advertisers)
-                consent_prompt = generate_consent_prompt(files_metadata, ad_preferences, advertisers)
-                consent_prompt_result = yield render_page(platform, consent_prompt)
+            return
 
-                # If the participant wants to donate the data gets donated
-                if consent_prompt_result.__type__ == "PayloadJSON":
-                    print('consent_prompt_result')
-                    print(consent_prompt_result.value)
-                    # Convert value to a dictionary
-                    result_value = json.loads(consent_prompt_result.value)
-                    print(result_value)
-                    print(result_value[0])
-                    print(result_value[0]['zip_contents_0'])
-                    submitted_files = result_value[0]['zip_contents_0']
-                    filenames = [file['File name'] for file in submitted_files]
-                    # Extract the zip and save the files into an "file-output" folder
-                    blobs = get_file_contents(zip_file, filenames)
-                    yield donate_files(f"{session_id}", blobs)
-                    # yield donate(f"{session_id}-{platform}", consent_prompt_result.value)
+        # Sad flow:
+        # The data was not valid, ask the participant to retry
+        if is_data_valid == False:
+            retry_prompt = generate_retry_prompt(title)
+            retry_prompt_result = yield render_page(title, retry_prompt)
 
-                break
+            # The participant wants to retry: start from the beginning
+            if retry_prompt_result.__type__ == 'PayloadTrue':
+                yield from facebook_flow(session_id, config)
+            # The participant does not want to retry or pressed skip
+            else:
+                return
 
-            # Sad flow:
-            # The data was not valid, ask the participant to retry
-            if is_data_valid == False:
-                retry_prompt = generate_retry_prompt(platform)
-                retry_prompt_result = yield render_page(platform, retry_prompt)
+    # The participant did not submit a file and pressed skip
+    else:
+        return
 
-                # The participant wants to retry: start from the beginning
-                if retry_prompt_result.__type__ == 'PayloadTrue':
-                    continue
-                # The participant does not want to retry or pressed skip
-                else:
-                    break
+def instagram_flow(session_id: str, config: dict):
+    title = "Instagram Ad Information Donation"
+    
+    retry_prompt = generate_unimplemented_prompt("instagram")
+    retry_prompt_result = yield render_page(title, retry_prompt)
+    
+    if retry_prompt_result.__type__ == 'PayloadTrue':
+        yield restart_system(target="?")
+    else:
+        return
 
-        # The participant did not submit a file and pressed skip
-        else:
-            break
+def unknown_flow(session_id: str, config: dict):
+    platform = config.get("platform", "unknown").lower()
+    title = f"Unknown Platform: {platform}"
+    retry_prompt = generate_unknown_platform_prompt(platform)
+    retry_prompt_result = yield render_page(title, retry_prompt)
+    
+    if retry_prompt_result.__type__ == 'PayloadTrue':
+        yield restart_system(target="?")
+    else:
+        return
+    
+platform_flows = {
+    "facebook": facebook_flow,
+    "instagram": instagram_flow,
+}
 
+def process(session_id: str, config = {}):
+    platform = config.get("platform", "facebook").lower()
+    
+    flow = platform_flows.get(platform, unknown_flow)
+    
+    # Use "yield from" here to get all steps of the flow (otherwise 
+    # it yields the generator instead of the steps)
+    yield from flow(session_id, config)
+    
     yield exit_port(0, "Success")
     yield render_end_page()
-

@@ -10,6 +10,17 @@ class CommandUIRender:
         dict["page"] = self.page.toDict()
         return dict
 
+class CommandSystemRestart:
+    __slots__ = "target"
+    
+    def __init__(self, target):
+        self.target = target
+    
+    def toDict(self):
+        dict = {}
+        dict["__type__"] = "CommandSystemRestart"
+        dict["target"] = self.target
+        return dict
 
 class CommandSystemDonate:
     __slots__ = "key", "json_string"
