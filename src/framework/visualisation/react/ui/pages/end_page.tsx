@@ -5,6 +5,7 @@ import { Page } from './templates/page'
 import TextBundle from '../../../../text_bundle'
 import { Translator } from '../../../../translator'
 import { BodyLarge, Title1 } from '../elements/text'
+import { PlatformsList } from './select_platform_page'
 
 type Props = Weak<PropsUIPageEnd> & ReactFactoryContext
 
@@ -15,6 +16,9 @@ export const EndPage = (props: Props): JSX.Element => {
     <>
       <Title1 text={title} />
       <BodyLarge text={text} />
+      <div className='space-x-4'>
+        <PlatformsList />
+      </div>
     </>
   )
 
@@ -30,7 +34,7 @@ interface Copy {
   text: string
 }
 
-function prepareCopy ({ locale }: Props): Copy {
+function prepareCopy({ locale }: Props): Copy {
   return {
     title: Translator.translate(title, locale),
     text: Translator.translate(text, locale)
@@ -42,5 +46,5 @@ const title = new TextBundle()
   .add('nl', 'Bedankt')
 
 const text = new TextBundle()
-  .add('en', 'Thank you for your participation. You can now close the page or refresh to restart the donation flow.')
-  .add('nl', 'Hartelijk dank voor uw deelname. U kunt deze pagina nu sluiten of de pagina verversen om de flow nogmaals te doorlopen.')
+  .add('en', 'Thank you for your participation. You can now close the page, refresh to restart the donation flow or choose another platform below.')
+  .add('nl', 'Hartelijk dank voor uw deelname. U kunt nu de pagina sluiten, vernieuwen om de donatiestroom opnieuw te starten of een ander platform hieronder kiezen.')
