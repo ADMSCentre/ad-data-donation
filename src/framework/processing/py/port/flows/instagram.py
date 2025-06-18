@@ -55,6 +55,9 @@ def instagram_flow(session_id: str, config: dict):
     file_prompt = generate_file_prompt("file_upload_prompt.md", "application/zip, text/plain")
     file_prompt_result = yield render_page(title, file_prompt)
     
+    if file_prompt_result.__type__ == "PayloadFalse":
+        return
+    
     # If the participant submitted a file: continue
     
     # Validate the file the participant submitted
