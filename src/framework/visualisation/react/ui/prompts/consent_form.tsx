@@ -203,7 +203,7 @@ export const ConsentForm = (props: Props): JSX.Element => {
               <PrimaryButton
                 label={donateButton}
                 onClick={handleDonate}
-                color="bg-success text-white"
+                color="bg-success text-success hover:text-white bg-opacity-15"
                 spinning={isDonating}
               />
               <LabelButton label={cancelButton} onClick={handleCancel} color="text-grey1" />

@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+
 class CommandUIRender:
     __slots__ = "page"
 
@@ -36,18 +39,24 @@ class CommandSystemDonate:
         dict["json_string"] = self.json_string
         return dict
 
-class CommandSystemDonateFiles:
-    __slots__ = "key", "file_contents"
+@dataclass
+class CommandSystemDonateFilesProps:
+    platform: str
 
-    def __init__(self, key, fileContents):
+class CommandSystemDonateFiles:
+    __slots__ = "key", "file_contents", "props"
+
+    def __init__(self, key, fileContents, props: CommandSystemDonateFilesProps):
         self.key = key
         self.file_contents = fileContents
+        self.props = props
 
     def toDict(self):
         dict = {}
         dict["__type__"] = "CommandSystemDonateFiles"
         dict["key"] = self.key
         dict["fileContents"] = self.file_contents
+        dict["props"] = self.props.__dict__ if self.props else None
         return dict
 
 class CommandSystemExit:

@@ -1,10 +1,13 @@
+from dataclasses import dataclass
+import json
 import os
 import zipfile
 import regex
 import pandas as pd
 import port.api.props as props
-from port.api.commands import (CommandSystemDonate, CommandSystemRestart, CommandUIRender, CommandSystemExit, CommandSystemDonateFiles)
+from port.api.commands import (CommandSystemDonate, CommandSystemDonateFilesProps, CommandSystemRestart, CommandUIRender, CommandSystemExit, CommandSystemDonateFiles)
 from pyodide.http import open_url
+from .utils.flat_json import flatten_json, map_json
 
 def get_prompt_for_language(markdown_path: str, language: str) -> str:
     base_url = os.environ.get("PUBLIC_URL", "")    
@@ -24,7 +27,14 @@ def get_translatable_prompt(markdown_path: str) -> props.Translatable:
     }
     return props.Translatable(translatable)
 
-def extract_files_metadata(zip_file: str, patterns: list[str]) -> pd.DataFrame:
+
+@dataclass
+class DataTable:
+    name: props.Translatable
+    data_frame: pd.DataFrame
+    visualizations: list[dict] = None
+
+def extract_files_metadata(zip_file: str, patterns: list[str]) -> DataTable:
     """
     This function extracts the data the researcher is interested in
 
@@ -35,7 +45,7 @@ def extract_files_metadata(zip_file: str, patterns: list[str]) -> pd.DataFrame:
 
     You could extract anything here
     """
-    out = pd.DataFrame()
+    pd_table = pd.DataFrame()
 
     try:
         file = zipfile.ZipFile(zip_file)
@@ -47,12 +57,17 @@ def extract_files_metadata(zip_file: str, patterns: list[str]) -> pd.DataFrame:
             info = file.getinfo(name)
             data.append((name, info.compress_size, info.file_size))
 
-        out = pd.DataFrame(data, columns=["File name", "Compressed file size", "File size"])
+        pd_table = pd.DataFrame(data, columns=["File name", "Compressed file size", "File size"])
 
     except Exception as e:
         print(f"Something went wrong: {e}")
 
-    return out
+    return DataTable(
+        name=props.Translatable({
+            "en": "The contents of your zipfile (only the files we are interested in)",
+        }),
+        data_frame=pd_table
+    )
 
 
 def validate_the_participants_input(zip_file: str, patterns: list[str]) -> bool:
@@ -68,8 +83,10 @@ def validate_the_participants_input(zip_file: str, patterns: list[str]) -> bool:
 
     try:
         with zipfile.ZipFile(zip_file) as zf:
+            filenames = zf.namelist()
+            print(f"[Validation] Found {len(filenames)} files in the zip file with names: {filenames}")
             # Ensure the pattern matches at least one file
-            if not any(regex.match(pattern, name) for pattern in patterns for name in zf.namelist()):
+            if not any(regex.match(pattern, name) for pattern in patterns for name in filenames):
                 return False
             return True
     except zipfile.BadZipFile:
@@ -145,7 +162,8 @@ def generate_file_prompt(description_public_path, extensions) -> props.PropsUIPr
     description = get_translatable_prompt(description_public_path)
     return props.PropsUIPromptFileInput(description, extensions)
 
-def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentForm:
+
+def generate_consent_prompt(*args: DataTable) -> props.PropsUIPromptConsentForm:
     description = get_translatable_prompt("consent_form.md")
 
     donate_question = props.Translatable({
@@ -158,36 +176,13 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
        "nl": "Ja, deel voor onderzoek"
     })
 
-    table_titles = [
-        props.Translatable({
-            "en": f"The contents of your zipfile (only the files we are interested in)",
-        }),
-        props.Translatable({
-            "en": f"Your ad preference list",
-        }),
-        props.Translatable({
-            "en": f"Advertisers using your activity or information",
-        }),
-    ]
-    
-    wordcloud = dict(
-        title = dict(en= "Ad Preferences"),
-        type = "wordcloud",
-        textColumn = 'Ad Preferences',
-        tokenize = False,
-    )
-    
-    visualisations = [
-        [],
-        [],
-        []
-    ] 
-
     tables = [] 
-    for index, df in enumerate(args):
-        table_title = table_titles[index]
-        vis = visualisations[index]
-        tables.append(props.PropsUIPromptConsentFormTable(f"zip_contents_{index}", title=table_title, data_frame=df, visualizations=vis))
+    for index, table in enumerate(args):
+        print(f"[Consent Form] Adding table {index}", table)
+        title = table.name
+        data_frame = table.data_frame
+        visualizations = table.visualizations if table.visualizations else []
+        tables.append(props.PropsUIPromptConsentFormTable(f"zip_contents_{index}", title=title, data_frame=data_frame, visualizations=visualizations))
 
     return props.PropsUIPromptConsentForm(
        tables,
@@ -201,8 +196,8 @@ def generate_consent_prompt(*args: pd.DataFrame) -> props.PropsUIPromptConsentFo
 def donate(key, json_string):
     return CommandSystemDonate(key, json_string)
 
-def donate_files(key, file_contents):
-    return CommandSystemDonateFiles(key, file_contents)
+def donate_files(key, file_contents, props: CommandSystemDonateFilesProps):
+    return CommandSystemDonateFiles(key, file_contents, props)
 
 def exit_port(code, info):
     return CommandSystemExit(code, info)
@@ -230,3 +225,58 @@ def unknown_flow(session_id: str, config: dict):
         yield restart_system(target="?")
     else:
         return
+
+def create_mapping_from_columns(columns):
+    """Create a mapping from the columns definition."""
+    mapping = []
+    for column in columns:
+        mapping.append({
+            "from": column["from"],
+            "to": f"rows.[i].{column['field']}"
+        })
+    return mapping
+
+def get_table_rows(table):
+    with open(table["filename"], "r", encoding="utf-8") as f:
+        data = json.load(f)
+    flattened_data = flatten_json.flatten(data, verbose=False)
+    return map_json.map_json(flattened_data, 
+                             create_mapping_from_columns(table["columns"]), 
+                             verbose=False
+                            ).get("rows", [])
+
+def create_pandas_table(table) -> pd.DataFrame:
+    """Create a pandas DataFrame from the table data."""
+    rows = get_table_rows(table)
+    return pd.DataFrame(rows)
+
+def zip_to_data_tables(zip_file: str, tables: list) -> list[DataTable]:
+    out: list[DataTable] = []
+    try:
+        file = zipfile.ZipFile(zip_file)
+        target_files = [table["filename"] for table in tables]
+        for name in file.namelist():
+            if not name in target_files:
+                continue
+            target_table = next((table for table in tables if table["filename"] == name), None)
+            with file.open(name) as json_file:
+                ad_pref_dict = json.load(json_file)
+                # Flatten the JSON data
+                flattened_data = flatten_json.flatten(ad_pref_dict, verbose=False)
+                # Map the flattened data to the desired structure
+                mapped_data = map_json.map_json(flattened_data, 
+                                                create_mapping_from_columns(target_table["columns"]), 
+                                                verbose=False)
+                # Convert to pandas DataFrame
+                df = pd.DataFrame(mapped_data.get("rows", []))
+                out.append(DataTable(
+                    name=props.Translatable({"en": target_table["name"]}),
+                    data_frame=df
+                ))
+
+    except Exception as e:
+        print(f"Something went wrong: {e}")
+
+    print(f"Created {len(out)} data tables:", out)
+
+    return out

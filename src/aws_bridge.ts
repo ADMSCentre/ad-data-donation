@@ -58,7 +58,9 @@ export default class AWSBridge implements Bridge {
     const date = new Date()
     date.setHours(date.getHours() + 10)
     const timestamp = date.toISOString().replace(/[-:]/g, '').replace('T', '_').slice(0, 15)
-    const targetFolder = localStorage.getItem('username') || command.key
+    // const targetFolder = localStorage.getItem('username') || command.key
+    const username = localStorage.getItem('username') || 'anonymous'
+    const targetFolder = `${username}/${command.props.platform}`
 
     const putObjectPromises = filenames.map(name => {
       const requestBody = {
