@@ -53,9 +53,9 @@ Please refer to the **Download Instructions** below (click to expand).
 
 **Step 8**: To download your files, follow the link in the email notification or by visiting the [**Download your information**](https://accountscenter.facebook.com/info_and_permissions/dyi/) section in the official Meta Accounts Centre. Under **Current Activity**, you will see your available download. Click **Download**. *You will need to enter your Facebook/Instagram password to download the files*.
 
-**Step 9**: In your downloads folder, a **.zip** file should have downloaded – likely labelled \`facebook/instagram-<your user name>-<date>-<some id>\`. This is the file you need to submit.
-
 ![Screenshot of the user downloading the .zip file from the Accounts Centre](./images/data_download_3.jpg)
+
+**Step 9**: In your downloads folder, a **.zip** file should have downloaded – likely labelled \`facebook/instagram-<your user name>-<date>-<some id>\`. This is the file you need to submit.
 
 </details>`;
 
