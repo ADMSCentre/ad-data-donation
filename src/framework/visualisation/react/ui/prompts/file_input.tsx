@@ -10,13 +10,13 @@ import { BodyLarge, BodyMedium, BodySmall } from '../elements/text'
 import { MarkdownPrompt } from './markdown_prompt'
 import useListUserDonations from '../hooks/useListUserDonations'
 import JSZip from 'jszip'
-import awsConfig from '../../../../../aws.config'
 import { AuthContext } from '../../contexts/AuthContext'
 import { Login } from '../elements/authentication'
 import { BsExclamationDiamond } from 'react-icons/bs'
 import { MoonLoader } from 'react-spinners'
 import withDarkModeLoader from '../elements/loader_wrapper'
 import mediumZoom from 'medium-zoom'
+import { asDonationWithContent } from '../../../../../lib/donations-adapter'
 
 type Props = Weak<PropsUIPromptFileInput> & ReactFactoryContext
 const ThemedMoonLoader = withDarkModeLoader(MoonLoader)
@@ -29,42 +29,39 @@ function useGetUserDonationAsZip(username: string | null, timestamp: string | nu
   }
 
   // Find the user's donations
-  const { data } = useListUserDonations(username, timestamp)
+  const { data } = useListUserDonations(username)
 
   React.useEffect(() => {
     const downloadFiles = async () => {
-      const donation = data[0];
+      const donation = data.find(d => d.timestamp === timestamp)
       if (!donation) {
-        return null
+        console.error("Donation not found for the given timestamp");
+        return;
       }
-      const zip = new JSZip()
-      const downloadUrl = `${awsConfig["lambda-get-url"]}`;
-      const promises = donation.files.map((file) => {
-        return fetch(downloadUrl, {
-          method: "POST",
-          body: JSON.stringify({
-            bucket_name: awsConfig["s3-bucket-name"],
-            path: `${username}/${donation.timestamp}/${file.filename}`
-          })
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const { url } = data;
-            // Get the file as a blob
-            return fetch(url)
-              .then((response) => response.blob())
-          })
-          .then((blob) => {
-            zip.file(file.filename, blob)
-          })
+      const donationWithContent = await asDonationWithContent(donation);
+      if (!donationWithContent) {
+        console.error("Failed to fetch donation content");
+        return;
+      }
+
+      // Create a new JSZip instance
+      const zip = new JSZip();
+      donationWithContent.files.forEach(file => {
+        zip.file(file.filename, JSON.stringify(file.content, null, 2));
       });
-      await Promise.all(promises)
-      return zip
+      // Generate the zip file
+      await zip.generateAsync({ type: "blob" })
+      return zip;
     };
 
     console.log('[FileInput] Fetching user donation as zip from data', data)
     setIsLoading(true)
     downloadFiles().then((zip) => {
+      if (!zip) {
+        console.error("Failed to create zip file");
+        setIsLoading(false);
+        return;
+      }
       setZip(zip)
       setIsLoading(false)
     })

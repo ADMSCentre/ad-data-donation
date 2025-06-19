@@ -1,6 +1,5 @@
 import { CommandHandler, ProcessingEngine } from '../types/modules'
 import { CommandSystemEvent, isCommand, Response } from '../types/commands'
-import config from "../../aws.config.js"
 
 export default class WorkerProcessingEngine implements ProcessingEngine {
   sessionId: String
@@ -88,7 +87,6 @@ export default class WorkerProcessingEngine implements ProcessingEngine {
       this.resolveInitialized = resolve
       const env = {
         ...process.env,
-        ...config
       }
       console.log('[WorkerProcessingEngine] sending initialise with env: ',
         env

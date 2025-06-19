@@ -2,7 +2,6 @@
 
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import awsConfig from "../../../../../aws.config";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { BsClipboardData, BsDownload, BsViewList } from "react-icons/bs"
@@ -10,24 +9,14 @@ import { BarLoader, ClimbingBoxLoader } from "react-spinners";
 import JSZip from "jszip";
 import useListUserDonations from "../hooks/useListUserDonations";
 import withDarkModeLoader from "../elements/loader_wrapper";
-
-interface Donation {
-  timestamp: string;
-  date: string;
-  time: string;
-  files: {
-    filename: string;
-    size: number
-  }[];
-}
+import { asDonationWithContent, ListUserDonationResponse } from "../../../../../lib/donations-adapter";
 
 const ThemedBarLoader = withDarkModeLoader(BarLoader);
 const ThemedClimbingBoxLoader = withDarkModeLoader(ClimbingBoxLoader);
 
 function DonationPackage({ donation }: {
-  donation: Donation;
+  donation: ListUserDonationResponse;
 }) {
-  const kilobytes = Math.round(donation.files.reduce((acc, file) => acc + file.size, 0) / 1024);
   // convert time to 12-hour format (AM/PM)
   const time = donation.time.split(":");
   const hours = +time[0];
@@ -38,48 +27,46 @@ function DonationPackage({ donation }: {
 
   const [isDownloading, setIsDownloading] = useState(false);
   const { username } = useContext(AuthContext);
-  const zip = new JSZip();
 
-  const downloadFiles = useCallback(() => {
+  const downloadFiles = useCallback(async () => {
     setIsDownloading(true);
-    const downloadUrl = `${awsConfig["lambda-get-url"]}`;
-    const promises = donation.files.map((file) => {
-      return fetch(downloadUrl, {
-        method: "POST",
-        body: JSON.stringify({
-          bucket_name: awsConfig["s3-bucket-name"],
-          path: `${username}/${donation.timestamp}/${file.filename}`
-        })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const { url } = data;
-          // Get the file as a blob
-          return fetch(url)
-            .then((response) => response.blob())
-        })
-    });
-    Promise.all(promises).then((blobs) => {
-      blobs.forEach((blob, index) => {
-        zip.file(donation.files[index].filename, blob);
-      });
-      zip.generateAsync({ type: "blob" })
-        .then((content) => {
-          const url = URL.createObjectURL(content);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `${donation.timestamp}.zip`;
-          a.click();
-        });
+    const donationWithContent = await asDonationWithContent(donation);
+    if (!donationWithContent) {
+      console.error("Failed to fetch donation content");
       setIsDownloading(false);
-    }).catch((error) => {
-      console.error("Failed to download files", error);
-      setIsDownloading(false);
+      return;
+    }
+
+    // Create a new JSZip instance
+    const zip = new JSZip();
+    donationWithContent.files.forEach(file => {
+      zip.file(file.filename, JSON.stringify(file.content, null, 2));
     });
-  }, [donation.files, donation.timestamp, username]);
+    // Generate the zip file
+    const content = await zip.generateAsync({ type: "blob" })
+    // Create a download link
+    const url = URL.createObjectURL(content);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${username}_${donation.platform}_${donation.timestamp}.zip`;
+    // Trigger the download
+    a.click();
+
+    // Clean up
+    URL.revokeObjectURL(url);
+    setIsDownloading(false);
+  }, [donation, username]);
 
   return (
     <div className="w-80 border-l-4 border-primary p-4 flex flex-col justify-between shadow hover:shadow-lg transition-all bg-primarylight bg-opacity-5 hover:bg-opacity-100">
+      <div className="flex items-center gap-1 text-xs">
+        <span className=" font-light">
+          Platform:
+        </span>
+        <span className=" font-semibold">
+          {donation.platform}
+        </span>
+      </div>
       <div>
         <div className="flex gap-4 items-center justify-between">
           <div className="font-semibold">{donation.date}</div>
@@ -93,7 +80,7 @@ function DonationPackage({ donation }: {
       </div>
       <div className="flex justify-between items-center text-sm">
         <a
-          href={`?username=${username}&timestamp=${donation.timestamp}&review=true`}
+          href={`?username=${username}&timestamp=${donation.timestamp}&platform=${donation.platform}&review=true`}
           rel="noreferrer"
           className="flex items-center gap-2 text-primary hover:text-primarydark transition-all justify-center"
         >
@@ -111,7 +98,7 @@ function DonationPackage({ donation }: {
               ? (
                 <>
                   <BsDownload />
-                  <span>Download ({kilobytes} KB)</span>
+                  <span>Download</span>
                 </>
               ) : (
                 <>
