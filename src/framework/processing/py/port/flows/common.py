@@ -159,7 +159,11 @@ def generate_unknown_platform_prompt(platform) -> props.PropsUIPromptConfirm:
     return props.PropsUIPromptConfirm(text, ok, cancel)
 
 def generate_file_prompt(description_public_path, extensions) -> props.PropsUIPromptFileInput:
-    description = get_translatable_prompt(description_public_path)
+    # description = get_translatable_prompt(description_public_path)
+    description = props.Translatable({
+        "en": "Please upload the **.zip** file you have downloaded from the platform.",
+        "nl": "Upload het bestand dat u van het platform heeft gedownload."
+    })
     return props.PropsUIPromptFileInput(description, extensions)
 
 
