@@ -26,7 +26,7 @@ After you have downloaded your Facebook and/or Instagram Ad Information package,
 Please refer to the **Download Instructions** below (click to expand).
 
 <details class='secondary guide zoomable'>
-<summary><strong>Download Instructions - Facebook and/or Instagram</strong></summary>
+<summary>Download Instructions - Facebook and/or Instagram</summary>
 
 **Step 1**: Click [this link](https://accountscenter.facebook.com/info_and_permissions/dyi/) to go to the **download your information** section in the official Facebook Accounts Centre and select **Download or transfer information** in the pop-up box. This can also be accessed manually by going to the settings in \`Facebook > Meta Accounts Center > Account Settings > Your information and permissions > Download your information\`.
 

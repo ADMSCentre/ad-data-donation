@@ -56,6 +56,10 @@
   @apply block w-full h-full absolute -z-50 inset-0 bg-gradient-to-br from-primary via-behind to-secondary opacity-10;
 }
 
+details summary {
+  @apply font-medium
+}
+
 details summary * {
   @apply cursor-pointer inline-block;
 }

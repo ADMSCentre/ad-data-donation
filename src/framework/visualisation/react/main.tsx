@@ -87,7 +87,7 @@ const Standalone = ({ elements }: MainProps): JSX.Element => {
           <div>{elements}</div>
         </div>
         <footer className="flex flex-col justify-center text-text px-8 py-4 gap-4 min-h-10 bg-primary">
-          <div className="flex flex-row justify-between items-center ">
+          <div className="flex flex-row flex-wrap justify-evenly gap-y-2 items-center ">
             <div>Adapted from <a href="https://github.com/d3i-infra/data-donation-task" target="_blank">d3i-infra/data-donation-task</a></div>
             <div className='flex justify-center gap-4'>
               {/* Logos */}
@@ -102,7 +102,6 @@ const Standalone = ({ elements }: MainProps): JSX.Element => {
               </a>
             </div>
           </div>
-
         </footer>
       </div>
       <Tooltip id="my-tooltip" style={{
