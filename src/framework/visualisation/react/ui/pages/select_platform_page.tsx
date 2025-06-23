@@ -90,9 +90,9 @@ export function PlatformsList() {
 export default function SelectPlatformPage() {
   return (
     <div className="flex flex-col items-center justify-center gap-6">
-      <div className="zoomable prose max-w-[85ch]">
-        <h1 className="text-2xl !mb-0 font-bold">Social Media Advertising Information Data Donation</h1>
-        <MarkdownPrompt content={replaceRelativeLinks(DESCRIPTION)} />
+      <div className="zoomable prose max-w-[85ch] dark:prose-strong:!text-white dark:prose-code:!text-white dark:prose-a:!text-white">
+        <h1 className="text-2xl !mb-0 font-bold dark:text-white">Social Media Advertising Information Data Donation</h1>
+        <MarkdownPrompt className="dark:text-white" content={replaceRelativeLinks(DESCRIPTION)} />
       </div>
       <div className="flex flex-col gap-4 items-center">
         <span className="text-xl font-semibold">Select a platform to donate data:</span>
