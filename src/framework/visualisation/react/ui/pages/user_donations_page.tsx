@@ -79,14 +79,6 @@ function DonationPackage({ donation }: {
         </div>
       </div>
       <div className="flex justify-between items-center text-sm">
-        {/* <a
-          href={`?username=${username}&timestamp=${donation.timestamp}&platform=${donation.platform}&review=true`}
-          rel="noreferrer"
-          className="flex items-center gap-2 text-primary hover:text-primarydark transition-all justify-center"
-        >
-          <BsClipboardData />
-          <span>Summary</span>
-        </a> */}
         <button
           type="button"
           className="flex items-center gap-2 hover:text-primarydark transition-all text-text underline disabled:cursor-not-allowed justify-center"
