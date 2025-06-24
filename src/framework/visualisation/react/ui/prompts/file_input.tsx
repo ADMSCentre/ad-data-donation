@@ -150,9 +150,9 @@ export const FileInput = (props: Props): JSX.Element => {
                   <BsExclamationDiamond className='text-primary' size={32} />
                   <div className='zoomable flex flex-col gap-2 items-center'>
                     <div>
-                      Before you can continue, please log in with the activation code shown in your mobile app. The code can be found under <strong className="text-primary">My Personal Dashboard</strong> in the Australian Mobile Ad Toolkit mobile app.
+                      Before you can continue, please log in with the activation code shown in the Australian Mobile Ad Toolkit app.
                     </div>
-                    <img src="images/activation_code.png" alt="Activation code location" className='w-1/2 !m-0' />
+                    <img src="images/activation_code.jpg" alt="Activation code location" className='w-1/2 !m-0' />
                   </div>
                 </div>
                 <div className='flex w-full justify-center'>
