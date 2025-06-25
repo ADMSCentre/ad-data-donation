@@ -19,4 +19,4 @@ Your advertising data, in combination with the ads you collect on the Australian
 2. **Consent to donate**:
 * If you agree to donate this data for research purposes, please click the I consent to donate button at the bottom of this page.
 
-**Contact Information**: If you have any questions or concerns, please contact [Associate Professor Nic Carah](https://communication-arts.uq.edu.au/profile/363/nicholas-carah), [n.carah@uq.edu.au](mailto:n.carah@uq.edu.au).
+**Contact Information**: If you need further assistance, please contact the study team via SMS on +61 455 205 423.
