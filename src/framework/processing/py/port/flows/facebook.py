@@ -42,12 +42,12 @@ tables = [
         "name": "Ad interests",
         "columns": [
             {
-                "from": "label_values.[-1].dict.[i].dict.[0].value",
+                "from": "label_values.[28].dict.[i].dict.[0].value",
                 "field": "value",
                 "name": "Value",
             },
             {
-                "from": "label_values.[-1].dict.[i].dict.[0].label",
+                "from": "label_values.[28].dict.[i].dict.[0].label",
                 "field": "label",
                 "name": "Label",
             }
@@ -55,27 +55,23 @@ tables = [
     },
     {
         "filename": "ads_information/advertisers_using_your_activity_or_information.json",
-        "name": "Advertisers using your activity or information",
+        "name": "A list uploaded or used by the advertiser",
         "columns": [
             {
-                "from": "custom_audiences_all_types_v2.[i].advertiser_name",
-                "field": "advertiser_name",
+                "from": "label_values.[0].vec.[i].value",
+                "field": "value",
                 "name": "Advertiser Name",
-            },
+            }
+        ]
+    },
+    {
+        "filename": "ads_information/advertisers_using_your_activity_or_information.json",
+        "name": "Interactions you may have had with the advertiser's website, app or store",
+        "columns": [
             {
-                "from": "custom_audiences_all_types_v2.[i].has_data_file_custom_audience",
-                "field": "has_data_file_custom_audience",
-                "name": "Has Data File Custom Audience",
-            },
-            {
-                "from": "custom_audiences_all_types_v2.[i].has_remarketing_custom_audience",
-                "field": "has_remarketing_custom_audience",
-                "name": "Has Remarketing Custom Audience",
-            },
-            {
-                "from": "custom_audiences_all_types_v2.[i].has_in_person_store_visit",
-                "field": "has_in_person_store_visit",
-                "name": "Has In-Person Store Visit",
+                "from": "label_values.[1].vec.[i].value",
+                "field": "value",
+                "name": "Advertiser Name",
             }
         ]
     },

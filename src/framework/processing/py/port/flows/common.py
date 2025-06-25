@@ -258,29 +258,28 @@ def zip_to_data_tables(zip_file: str, tables: list) -> list[DataTable]:
     out: list[DataTable] = []
     try:
         file = zipfile.ZipFile(zip_file)
-        target_files = [table["filename"] for table in tables]
-        for name in file.namelist():
-            if not name in target_files:
+        # Since each file can create multiple tables, iterate over the tables
+        # and check if the file exists in the zip archive
+        for table in tables:
+            target_filename = table["filename"]
+            if target_filename not in file.namelist():
                 continue
-            target_table = next((table for table in tables if table["filename"] == name), None)
-            with file.open(name) as json_file:
+            with file.open(target_filename) as json_file:
                 ad_pref_dict = json.load(json_file)
                 # Flatten the JSON data
                 flattened_data = flatten_json.flatten(ad_pref_dict, verbose=False)
                 # Map the flattened data to the desired structure
                 mapped_data = map_json.map_json(flattened_data, 
-                                                create_mapping_from_columns(target_table["columns"]), 
+                                                create_mapping_from_columns(table["columns"]), 
                                                 verbose=False)
                 # Convert to pandas DataFrame
                 df = pd.DataFrame(mapped_data.get("rows", []))
                 out.append(DataTable(
-                    name=props.Translatable({"en": target_table["name"]}),
+                    name=props.Translatable({"en": table["name"]}),
                     data_frame=df
                 ))
 
     except Exception as e:
         print(f"Something went wrong: {e}")
-
-    print(f"Created {len(out)} data tables:", out)
 
     return out

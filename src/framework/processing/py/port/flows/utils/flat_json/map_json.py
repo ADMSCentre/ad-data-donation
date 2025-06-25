@@ -27,6 +27,11 @@ def create_regex_from_path(path):
     indices = re.findall(r'\[([^\]]+)\]', path)
     # Replace the indices with a regex pattern that matches any string
     for index in indices:
+        # If an actual number is given, leave it as is so it can be matched literally
+        is_number = re.match(r'^\d+$', index)
+        if is_number:
+            escaped_path = escaped_path.replace(f"[{index}]", f"\\[({index})\\]")
+            continue
         escaped_path = escaped_path.replace(f"[{index}]", r"\[(\d+)\]")
     
     # Replace wildcards with a regex pattern that matches and group any string
@@ -34,6 +39,7 @@ def create_regex_from_path(path):
     
     # Create the regex pattern
     regex_pattern = f"^{escaped_path}$"
+    
     return {
         "regex": regex_pattern,
         "indices": indices
@@ -79,7 +85,7 @@ def match_path(path, regex, indices, **kwargs):
     return {
         "match": match,
         "indices": {
-            indices[i]: matched_indices[i] if matched_indices else None
+            indices[i]: matched_indices[i] if matched_indices and i < len(matched_indices) else None
             for i in range(len(indices))
         },
         "wildcards": wildcards
@@ -140,7 +146,7 @@ def map_json(data, mapping, verbose=False):
         # Match the flattened keys against the regex
         for key in flattened_data.keys():
             match_result = match_path(key, **path_regex)
-            if verbose: print(f"Matching key '{key}' against regex: {match_result}")
+            if verbose: print(f"Matching key '{key}' against regex {path_regex}: {match_result}")
             if match_result['match']:
                 # Resolve the 'to' path with matched indices
                 resolved_to_path = resolve_path(to_path, **match_result)
