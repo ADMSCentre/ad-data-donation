@@ -21,7 +21,7 @@ export const Login = () => {
         <BsQuestionCircle
           className="text-text"
           data-tooltip-id="my-tooltip"
-          data-tooltip-content="The activation code is used to identify you in the system without revealing your identity. It is the first 8 characters of the code you received in the Australian Mobile Ad Toolkit mobile app."
+          data-tooltip-content="The activation code is used to identify you in the system without revealing your identity. It can be found in the Australian Mobile Ad Toolkit mobile app."
         />
         <input
           type="text"
