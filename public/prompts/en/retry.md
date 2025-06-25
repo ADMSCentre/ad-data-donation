@@ -12,4 +12,4 @@ Unfortunately, we cannot process your file. It looks like there was an issue wit
 - **Skip** the donation process as we cannot accept your file.
 - **Try Again** to select a different file.
 
-If you believe the file is correct and should be accepted, please contact Associate Professor Nic Carah at [n.carah@uq.edu.au](mailto:n.carah@uq.edu.au) or our support research team for assistance.
+If you believe the file is correct and should be accepted or if you need further assistance, please contact the study team via SMS on +61 455 205 423.
