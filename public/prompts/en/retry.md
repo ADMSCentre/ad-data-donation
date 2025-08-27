@@ -1,6 +1,10 @@
 ## Oops! Something went wrong.
 
-Unfortunately, we cannot process your file. It looks like there was an issue with the file you submitted. Here are a few things to check:
+Unfortunately, we cannot process your file. It looks like there was an issue with the file you submitted.
+
+{ message }
+
+Here are a few things to check:
 
 1. **File Format:**
    - Ensure that the file format is correct. The expected format is **JSON**.

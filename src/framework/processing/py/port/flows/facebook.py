@@ -95,7 +95,7 @@ def facebook_flow(session_id: str, config: dict):
     # Validate the file the participant submitted
     # In general this is wise to do
     zip_file = file_prompt_result.value
-    is_data_valid = validate_the_participants_input(zip_file, filename_patterns)
+    is_data_valid, message = validate_the_participants_input(zip_file, filename_patterns)
 
     # Happy flow:
     # The file the participant submitted is valid
@@ -131,7 +131,7 @@ def facebook_flow(session_id: str, config: dict):
     # Sad flow:
     # The data was not valid, ask the participant to retry
     if is_data_valid == False:
-        retry_prompt = generate_retry_prompt(title)
+        retry_prompt = generate_retry_prompt(title, message)
         retry_prompt_result = yield render_page(title, retry_prompt)
 
         # The participant wants to retry: start from the beginning

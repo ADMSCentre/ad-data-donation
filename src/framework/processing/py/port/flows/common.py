@@ -19,10 +19,16 @@ def get_prompt_for_language(markdown_path: str, language: str) -> str:
         value = f"No translation found for {language}"
     return value
 
-def get_translatable_prompt(markdown_path: str) -> props.Translatable:
+def replace_variables_in_markdown(markdown: str, variables: dict) -> str:
+    for key, value in variables.items():
+        placeholder = "{ " + key + " }"
+        markdown = markdown.replace(placeholder, str(value))
+    return markdown
+
+def get_translatable_prompt(markdown_path: str, variables: dict) -> props.Translatable:
     languages = props.Translations.__required_keys__
     translatable = {
-        language: get_prompt_for_language(markdown_path, language)
+        language: replace_variables_in_markdown(get_prompt_for_language(markdown_path, language), variables)
         for language in languages
     }
     return props.Translatable(translatable)
@@ -70,7 +76,7 @@ def extract_files_metadata(zip_file: str, patterns: list[str]) -> DataTable:
     )
 
 
-def validate_the_participants_input(zip_file: str, patterns: list[str]) -> bool:
+def validate_the_participants_input(zip_file: str, patterns: list[str]) -> tuple[bool, str]:
     """
     Check if the participant actually submitted a zipfile
     Returns True if participant submitted a zipfile, otherwise False
@@ -87,10 +93,10 @@ def validate_the_participants_input(zip_file: str, patterns: list[str]) -> bool:
             print(f"[Validation] Found {len(filenames)} files in the zip file with names: {filenames}")
             # Ensure the pattern matches at least one file
             if not any(regex.match(pattern, name) for pattern in patterns for name in filenames):
-                return False
-            return True
+                return False, "The zip file does not contain any of the expected file(s) and cannot be processed:\n- " + "\n - ".join(set(patterns))
+            return True, None
     except zipfile.BadZipFile:
-        return False
+        return False, "The file is not a valid zip file"
 
 
 def render_end_page():
@@ -116,8 +122,8 @@ def restart_system(target="__current__"):
     """
     return CommandSystemRestart(target)
 
-def generate_retry_prompt(platform: str) -> props.PropsUIPromptConfirm:
-    text = get_translatable_prompt("retry.md")
+def generate_retry_prompt(platform: str, message: str) -> props.PropsUIPromptConfirm:
+    text = get_translatable_prompt("retry.md", variables={"message": message})
     ok = props.Translatable({
         "en": "Try again",
         "nl": "Probeer opnieuw"
